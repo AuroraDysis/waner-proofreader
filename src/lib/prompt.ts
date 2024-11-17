@@ -29,9 +29,8 @@ Please carefully check the text against the following aspects:
       "You are a seasoned digital communicator, adept at conveying clear, concise, and effective messages in an instant messaging environment.",
     guidelines: `- Treating the text as an instant message.
 - Using an informal tone appropriate for casual conversations.
-- Emojis and abbreviations are acceptable.
-- Making sure it's clear, concise, polite, and easy to understand.
-- Using emojis sparingly if necessary.`,
+- Emojis and abbreviations are acceptable, but use them sparingly.
+- Making sure it's clear, concise, polite, and easy to understand.`,
   },
   {
     key: "email",
