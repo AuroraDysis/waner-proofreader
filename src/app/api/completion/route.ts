@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     apiKey: openaiApiKey,
   });
 
-  const result = await streamText({
+  const result = streamText({
     model: openai(model),
     system: generate_system_prompt(context, instruction),
     prompt,
