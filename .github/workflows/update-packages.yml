@@ -19,9 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+          cache: "pnpm"
 
       - name: Update packages
-        run: npx npm-check-updates -x react -x react-dom -x @types/react -x @types/react-dom -u && npm install
+        run: npx npm-check-updates -x react -x react-dom -x @types/react -x @types/react-dom -u && pnpm install
 
       - name: Commit & Push changes
         uses: actions-js/push@master
