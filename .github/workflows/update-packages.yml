@@ -28,7 +28,9 @@ jobs:
           cache: "pnpm"
 
       - name: Update packages
-        run: npx npm-check-updates -x react -x react-dom -x @types/react -x @types/react-dom -u && pnpm install
+        run: |
+          npx npm-check-updates -x react -x react-dom -x @types/react -x @types/react-dom -u
+          pnpm install --no-frozen-lockfile
 
       - name: Commit & Push changes
         uses: actions-js/push@master
