@@ -10,10 +10,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.0.19",
+    "@ai-sdk/openai": "^1.0.20",
     "@monaco-editor/react": "^4.7.0-rc.0",
     "@nextui-org/react": "^2.6.11",
-    "ai": "^4.0.38",
+    "ai": "^4.0.39",
     "framer-motion": "^11.18.0",
     "lodash": "^4.17.21",
     "next": "^15.1.4",
@@ -29,7 +29,7 @@
     "@tanstack/react-virtual": "^3.11.2"
   },
   "devDependencies": {
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "eslint": "^9.18.0",
