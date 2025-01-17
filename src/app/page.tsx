@@ -19,7 +19,8 @@ import {
   PopoverContent,
   Textarea,
 } from "@heroui/react";
-import { DiffEditor, MonacoDiffEditor, useMonaco } from "@monaco-editor/react";
+import { DiffEditor, useMonaco } from "@monaco-editor/react";
+import type { MonacoDiffEditor } from "@monaco-editor/react";
 
 import {
   EditIcon,
@@ -197,7 +198,7 @@ export default function HomePage() {
       <Card className="h-full">
         <CardBody className="overflow-hidden">
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
               <div className="flex items-center gap-4 flex-1">
                 <Autocomplete
                   allowsCustomValue
@@ -205,7 +206,7 @@ export default function HomePage() {
                   defaultItems={models.map((model) => ({ key: model }))}
                   inputValue={model}
                   onInputChange={(value) => setModel(value)}
-                  className="max-w-sm"
+                  className="w-full sm:max-w-sm"
                 >
                   {(model) => (
                     <AutocompleteItem key={model.key}>
@@ -219,7 +220,7 @@ export default function HomePage() {
                   onSelectionChange={(keys) =>
                     keys?.currentKey && setContext(keys?.currentKey)
                   }
-                  className="max-w-40"
+                  className="w-full sm:max-w-40"
                 >
                   {contexts.map((context) => (
                     <SelectItem key={context.key}>{context.label}</SelectItem>
@@ -231,7 +232,7 @@ export default function HomePage() {
                   onSelectionChange={(keys) =>
                     keys?.currentKey && setInstruction(keys?.currentKey)
                   }
-                  className="max-w-md"
+                  className="w-full sm:max-w-md"
                   isDisabled={context === "academic"}
                 >
                   {instructions.map((instruction) => (
@@ -293,7 +294,7 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <div className="flex items-center mb-4">
+            <div className="hidden flex-col lg:flex items-center mb-4">
               <div
                 className="flex justify-center font-bold"
                 style={{
