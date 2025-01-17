@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Textarea,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { DiffEditor, MonacoDiffEditor, useMonaco } from "@monaco-editor/react";
 
 import {

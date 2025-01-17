@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Button, ButtonProps, Tooltip } from "@nextui-org/react";
+import { Button, ButtonProps, Tooltip } from "@heroui/react";
 
 interface IconButtonProps extends ButtonProps {
   tooltip?: ReactNode;

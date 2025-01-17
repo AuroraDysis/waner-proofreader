@@ -7,7 +7,7 @@ import {
   Button,
   useDisclosure,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { LinkIcon, LockIcon } from "@/components/Icon";
 import useLocalStorageState from "use-local-storage-state";
 
