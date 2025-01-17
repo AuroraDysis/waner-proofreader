@@ -294,7 +294,7 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <div className="hidden flex-col lg:flex items-center mb-4">
+            <div className="hidden flex-row lg:flex items-center mb-4">
               <div
                 className="flex justify-center font-bold"
                 style={{
