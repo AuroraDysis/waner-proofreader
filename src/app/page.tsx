@@ -94,6 +94,7 @@ export default function HomePage() {
 
   const isServerRender = useIsServerRender();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (isServerRender) {
       return;
@@ -111,7 +112,8 @@ export default function HomePage() {
   }, [isServerRender]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Initialize the text in the editor
-  useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
     if (isServerRender || !editorMounted) {
       return;
     }
