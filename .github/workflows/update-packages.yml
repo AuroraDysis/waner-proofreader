@@ -28,7 +28,7 @@ jobs:
 
       - name: Update packages
         run: |
-          npx npm-check-updates -u
+          npx npm-check-updates -u -x tailwindcss
           pnpm install --no-frozen-lockfile
 
       - name: Commit & Push changes
