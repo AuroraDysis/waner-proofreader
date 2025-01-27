@@ -35,13 +35,25 @@ To run Waner Proofreader locally, ensure that you have Node.js installed on your
 4. Create a `.env` file in the root directory and add the following environment variables:
 
    ```
-   API_KEY=<your_api_key>
-   OPENAI_BASE_URL=https://openrouter.ai/api/v1
-   OPENAI_API_KEY=<your_openrouter_api_key>
-   NEXT_PUBLIC_OPENAI_MODEL=anthropic/claude-3.5-sonnet,anthropic/claude-3-opus,openai/chatgpt-4o-latest,openai/gpt-4
+   CONFIG=<base64 encoded TOML>
+   NEXT_PUBLIC_OPENAI_MODEL=anthropic/claude-3.5-sonnet,anthropic/claude-3-opus,openai/chatgpt-4o-latest,openai/gpt-4,google/gemini-2.0-flash-thinking-exp:free
    ```
 
-   Replace `<your_openrouter_api_key>` with your actual OpenRouter API key, which you can obtain by signing up at [OpenRouter](https://openrouter.ai/). If you want to use other providers, you may want to modify `NEXT_PUBLIC_OPENAI_MODEL` accordingly. Alternatively, you can set the model in the UI. Replace `<your_api_key>` with your API key for security. You can pass multiple keys separated by commas.
+   where `<base64 encoded TOML>` is the base64 encoded TOML configuration file. The TOML file should contain the following information:
+
+   ```toml
+   [[users]]
+   name = "name"
+   key = "password"
+   openai_base_url = "base url of API endpoint, for example, https://openrouter.ai/api/v1 or https://api.openai.com/v1"
+   openai_api_key = "your api key of the endpoint"
+
+   [[users]]
+   name = "another name"
+   ...
+   ```
+
+   If you want to use providers other than OpenRouter, you may need to modify `NEXT_PUBLIC_OPENAI_MODEL` accordingly. Alternatively, you can set the model in the UI. Replace `<your_api_key>` with your API key for security. You can pass multiple keys separated by commas.
 
 5. Start the development server:
 
