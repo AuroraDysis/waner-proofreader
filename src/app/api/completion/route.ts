@@ -3,9 +3,25 @@ import { streamText } from "ai";
 import { generate_system_prompt } from "@/lib/prompt";
 import { NextRequest, NextResponse } from "next/server";
 import { models } from "@/lib/prompt";
+import { parse } from "smol-toml";
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
+
+interface Config {
+  users: User[];
+}
+
+interface User {
+  name: string;
+  key: string;
+  openai_base_url: string;
+  openai_api_key: string;
+}
+
+const config_b64string = process.env.CONFIG || "";
+const config_buffer = Buffer.from(config_b64string, "base64");
+const config = parse(config_buffer.toString("utf-8")) as unknown as Config;
 
 interface RequestPayload {
   model: string;
@@ -16,7 +32,7 @@ interface RequestPayload {
   apiKey: string;
 }
 
-const apiKeys = process.env.API_KEY?.split(",") || [];
+const apiKeys = config.users.map((user) => user.key) || [];
 
 export async function POST(req: NextRequest) {
   const {
@@ -28,12 +44,15 @@ export async function POST(req: NextRequest) {
     apiKey,
   }: RequestPayload = await req.json();
 
-  let baseURL = "";
+  let openaiBaseUrl = "";
   let openaiApiKey = "";
 
   if (apiKeys.includes(apiKey)) {
-    baseURL = process.env.OPENAI_BASE_URL!;
-    openaiApiKey = process.env.OPENAI_API_KEY!;
+    const user = config.users.find((user) => user.key === apiKey)!;
+    openaiBaseUrl = user.openai_base_url;
+    openaiApiKey = user.openai_api_key;
+
+    console.log("User", user.name, "is using the model", model);
 
     if (!models.includes(model)) {
       return new NextResponse(
@@ -44,16 +63,16 @@ export async function POST(req: NextRequest) {
       );
     }
   } else {
-    baseURL = endpoint || process.env.OPENAI_BASE_URL!;
+    openaiBaseUrl = endpoint || "https://api.openai.com/v1";
     openaiApiKey = apiKey;
   }
 
-  if (!baseURL || !openaiApiKey) {
+  if (!openaiBaseUrl || !openaiApiKey) {
     return new NextResponse("Invalid API key or endpoint", { status: 403 });
   }
 
   const openai = createOpenAI({
-    baseURL: baseURL,
+    baseURL: openaiBaseUrl,
     apiKey: openaiApiKey,
   });
 
