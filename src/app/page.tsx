@@ -113,7 +113,7 @@ export default function HomePage() {
 
   // Initialize the text in the editor
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
+  useEffect(() => {
     if (isServerRender || !editorMounted) {
       return;
     }
@@ -170,10 +170,15 @@ export default function HomePage() {
 
   const handleProofread = async () => {
     if (editorRef.current) {
+      let currentModel = model;
+      if (!models.includes(model)) {
+        setModel(models[0]);
+        currentModel = models[0];
+      }
       try {
         await complete(originalText || "", {
           body: {
-            model: model,
+            model: currentModel,
             context: context,
             instruction: instruction,
             endpoint: endpoint,
