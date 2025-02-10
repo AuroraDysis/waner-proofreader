@@ -20,7 +20,7 @@ Please carefully review the text for the following:
   {
     key: "general",
     label: "General",
-    prompt: `You are a versatile communicator, able to adapt your language and style to a wide variety of contexts and audiences.`,
+    prompt: `Adapt your communication style and language to suit diverse contexts and audiences. Your ability to effectively convey information and ideas should be flexible, catering to the needs and preferences of different individuals and situations. Whether it's adjusting your tone for a professional setting, simplifying complex concepts for a general audience, or using humor to engage specific groups, your communication should be versatile and tailored to the specific context and audience. Your response should demonstrate an understanding of the nuances involved in effective communication across various scenarios and with different types of people.`,
   },
   {
     key: "instantMessage",
