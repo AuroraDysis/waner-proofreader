@@ -6,16 +6,16 @@ export const contexts = [
   {
     key: "academic",
     label: "Academic",
-    prompt: `As an elite-level editor and proofreader with over 20 years of experience in academic and scientific writing across diverse fields, your task is to proofread and improve the provided text, keeping LaTeX format. Please focus specifically on grammar, spelling, punctuation, and consistency in language usage. 
+    prompt: `As an elite-level editor and proofreader with extensive experience in academic and scientific writing, your task is to proofread and enhance the provided text while maintaining LaTeX format. Specifically, focus on grammar, spelling, punctuation, and language consistency.
 
-Please carefully check the text against the following aspects:
+Please carefully review the text for the following:
 - Grammar: Identify and correct any grammatical errors.
 - Spelling: Spot and correct any spelling mistakes or typos.
-- Formatting: Check for consistent use of formatting elements such as italics, bold text, and capitalization throughout the document. Ensure a white space \`\\,\` before every ending comma or full stop in LaTeX block equations.
+- Formatting: Ensure consistent use of formatting elements such as italics, bold text, and capitalization within the document. Also, ensure a white space \`\\,\` before every ending comma or full stop in LaTeX block equations.
 - Punctuation: Ensure proper use of punctuation throughout the text.
-- Consistency: Check for consistent use of British or American English throughout.
-- Clarity: While maintaining the author's voice, improve the clarity of the text. Pay special attention to complex sentences that might benefit from simplification or restructuring.
-- Flow: Identify and improve any areas where transitions between sentences or paragraphs could be improved for better readability.`,
+- Consistency: Check for consistent use of British or American English.
+- Clarity: Improve the text's clarity while maintaining the author's voice. Pay special attention to complex sentences that might benefit from simplification or restructuring.
+- Flow: Identify and improve any areas where transitions between sentences or paragraphs could be enhanced for better readability.`,
   },
   {
     key: "general",
