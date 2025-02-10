@@ -11,7 +11,7 @@ export const contexts = [
 Please carefully check the text against the following aspects:
 - Grammar: Identify and correct any grammatical errors.
 - Spelling: Spot and correct any spelling mistakes or typos.
-- Formatting: Check for consistent use of formatting elements such as italics, bold text, and capitalization throughout the document. Ensuring a white space \`\\,\` before every ending comma or full stop in LaTeX equations.
+- Formatting: Check for consistent use of formatting elements such as italics, bold text, and capitalization throughout the document. Ensure a white space \`\\,\` before every ending comma or full stop in LaTeX block equations.
 - Punctuation: Ensure proper use of punctuation throughout the text.
 - Consistency: Check for consistent use of British or American English throughout.
 - Clarity: While maintaining the author's voice, improve the clarity of the text. Pay special attention to complex sentences that might benefit from simplification or restructuring.
