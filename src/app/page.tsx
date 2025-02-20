@@ -296,7 +296,7 @@ export default function HomePage() {
                 </Popover>
                 <IconButton
                   tooltip={isLoading ? "Cancel" : "Proofread"}
-                  icon={isLoading ? <Spinner className="h-7 w-7" /> : <EditIcon className="dark:invert h-7 w-7" />}
+                  icon={isLoading ? <Spinner color="current" className="h-7 w-7" /> : <EditIcon className="dark:invert h-7 w-7" />}
                   onPress={() => isLoading ? stop() : handleProofread()}
                 />
               </div>
