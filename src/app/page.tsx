@@ -17,6 +17,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
+  Spinner,
   Textarea,
 } from "@heroui/react";
 import { DiffEditor, useMonaco } from "@monaco-editor/react";
@@ -44,7 +45,7 @@ import SettingModal from "@/components/SettingModal";
 function useIsServerRender() {
   const isServerRender = useSyncExternalStore(
     () => {
-      return () => {};
+      return () => { };
     },
     () => false,
     () => true
@@ -152,7 +153,7 @@ export default function HomePage() {
     setEditorMounted(true);
   };
 
-  const { completion, complete, isLoading } = useCompletion({
+  const { completion, complete, isLoading, stop } = useCompletion({
     onError: (error) => {
       setProofreadError(error.message);
       settingDisclosure.onOpen();
@@ -294,10 +295,9 @@ export default function HomePage() {
                   </PopoverContent>
                 </Popover>
                 <IconButton
-                  tooltip="Proofread"
-                  icon={<EditIcon className="dark:invert h-7 w-7" />}
-                  isLoading={isLoading}
-                  onPress={() => handleProofread()}
+                  tooltip={isLoading ? "Cancel" : "Proofread"}
+                  icon={isLoading ? <Spinner className="h-7 w-7" /> : <EditIcon className="dark:invert h-7 w-7" />}
+                  onPress={() => isLoading ? stop() : handleProofread()}
                 />
               </div>
             </div>
