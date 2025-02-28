@@ -4,22 +4,30 @@ import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { useCompletion } from "ai/react";
 import { useTheme } from "next-themes";
+import { useDisclosure } from "@/lib/hooks";
 
 import {
   Select,
+  SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Card,
-  CardBody,
-  Link,
-  useDisclosure,
-  Autocomplete,
-  AutocompleteItem,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
-  Spinner,
-  Textarea,
-} from "@heroui/react";
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { DiffEditor, useMonaco } from "@monaco-editor/react";
 import type { MonacoDiffEditor } from "@monaco-editor/react";
 
@@ -40,6 +48,7 @@ import {
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
+import Spinner from "@/components/Spinner";
 
 // https://github.com/astoilkov/use-local-storage-state/issues/56
 function useIsServerRender() {
@@ -58,6 +67,7 @@ export default function HomePage() {
   const editorRef = useRef<MonacoDiffEditor | null>(null);
 
   const settingDisclosure = useDisclosure();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [model, setModel] = useLocalStorageState("model", {
     defaultValue: models[0],
@@ -201,131 +211,264 @@ export default function HomePage() {
     }
   }, [monaco, theme, editorMounted]);
 
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
-    <div className="m-4 h-[96vh]">
-      <Card className="h-full">
-        <CardBody className="overflow-hidden">
-          <div className="flex flex-col h-full">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-              <div className="flex flex-col sm:flex-row items-center gap-4 flex-1">
-                <Autocomplete
-                  allowsCustomValue
-                  label="Select a model"
-                  defaultItems={models.map((model) => ({ key: model }))}
-                  inputValue={model}
-                  onInputChange={(value) => setModel(value)}
-                  className="w-full sm:max-w-sm"
-                >
-                  {(model) => (
-                    <AutocompleteItem key={model.key}>
-                      {model.key}
-                    </AutocompleteItem>
+    <div className="h-screen w-full flex flex-col p-2 sm:p-4">
+      <Card className="flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="p-3 sm:p-4 pb-0 sm:pb-0">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg sm:text-xl">Waner Proofreader</CardTitle>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="md:hidden" 
+                onClick={toggleMobileMenu}
+                aria-label="Menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {mobileMenuOpen ? (
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  ) : (
+                    <path d="M3 12h18M3 6h18M3 18h18" />
                   )}
-                </Autocomplete>
-                <Select
-                  label="Select a context"
-                  selectedKeys={[context]}
-                  onSelectionChange={(keys) =>
-                    keys?.currentKey && setContext(keys?.currentKey)
-                  }
-                  className="w-full sm:max-w-40"
-                >
-                  {contexts.map((context) => (
-                    <SelectItem key={context.key}>{context.label}</SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  label="Select an instruction"
-                  selectedKeys={[instruction]}
-                  onSelectionChange={(keys) =>
-                    keys?.currentKey && setInstruction(keys?.currentKey)
-                  }
-                  className="w-full sm:max-w-md"
-                  isDisabled={context === "academic"}
-                >
-                  {instructions.map((instruction) => (
-                    <SelectItem key={instruction.key}>
-                      {instruction.prompt}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </div>
-              <div className="flex gap-2">
+                </svg>
+              </Button>
+              <div className="hidden md:flex items-center gap-2">
                 <IconButton
                   tooltip="GitHub repository"
-                  icon={<GithubIcon className="dark:invert h-7 w-7" />}
-                  as={Link}
-                  isIconOnly
+                  icon={<GithubIcon className="dark:invert h-6 w-6" />}
                   href="https://github.com/AuroraDysis/waner-proofreader"
-                  isExternal
+                  target="_blank"
+                  rel="noopener noreferrer"
                 />
                 <ThemeSwitcher />
                 <IconButton
                   tooltip="Settings"
-                  icon={<SettingIcon className="dark:invert h-7 w-7" />}
-                  onPress={settingDisclosure.onOpen}
+                  icon={<SettingIcon className="dark:invert h-6 w-6" />}
+                  onClick={settingDisclosure.onOpen}
                 />
-                <SettingModal
-                  proofreadError={proofreadError}
-                  disclosure={settingDisclosure}
-                />
-                <Popover placement="bottom">
+                <Popover>
                   <PopoverTrigger>
                     <IconButton
                       tooltip="System Prompt"
-                      className="h-12 w-12"
-                      icon={<LightbulbIcon className="dark:invert h-7 w-7" />}
-                      isIconOnly
+                      icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
                     />
                   </PopoverTrigger>
                   <PopoverContent>
-                    <div className="min-w-96">
+                    <div className="min-w-[300px] max-w-[500px]">
                       <Textarea
                         className="w-full h-full"
-                        label="System Prompt"
-                        minRows={16}
-                        maxRows={16}
-                        defaultValue={generate_system_prompt(
-                          context,
-                          instruction
-                        )}
-                        isReadOnly
+                        placeholder="System Prompt"
+                        rows={16}
+                        value={generate_system_prompt(context, instruction)}
+                        readOnly
                       />
                     </div>
                   </PopoverContent>
                 </Popover>
                 <IconButton
                   tooltip={isLoading ? "Cancel" : "Proofread"}
-                  icon={isLoading ? <Spinner color="current" className="h-7 w-7" /> : <EditIcon className="dark:invert h-7 w-7" />}
-                  onPress={() => isLoading ? stop() : handleProofread()}
+                  icon={isLoading ? <Spinner color="current" className="h-6 w-6" /> : <EditIcon className="dark:invert h-6 w-6" />}
+                  onClick={() => isLoading ? stop() : handleProofread()}
                 />
               </div>
             </div>
-            <div className="hidden flex-row lg:flex items-center mb-4">
-              <div
-                className="flex justify-center font-bold"
-                style={{
-                  width: `${leftHeaderWidth ? leftHeaderWidth - 14 : "50%"}px`,
-                }}
-              >
-                Original Text
-              </div>
-              <div className="flex justify-center font-bold flex-1">
-                Modified Text
+          </div>
+        </CardHeader>
+
+        <CardContent className="p-0 sm:p-4 pt-3 flex-1 flex flex-col overflow-hidden">
+          {/* Mobile menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden p-3 bg-muted/20 rounded-md mb-3">
+              <div className="grid grid-cols-1 gap-3">
+                <Select value={model} onValueChange={(value: string) => setModel(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {models.map((model) => (
+                      <SelectItem key={model} value={model}>
+                        {model}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={context} onValueChange={(value: string) => setContext(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a context" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contexts.map((context) => (
+                      <SelectItem key={context.key} value={context.key}>
+                        {context.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={instruction} onValueChange={(value: string) => setInstruction(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an instruction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {instructions.map((instruction) => (
+                      <SelectItem key={instruction.key} value={instruction.key}>
+                        {instruction.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex justify-between items-center gap-2">
+                  <IconButton
+                    tooltip="GitHub repository"
+                    icon={<GithubIcon className="dark:invert h-6 w-6" />}
+                    href="https://github.com/AuroraDysis/waner-proofreader"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                  <ThemeSwitcher />
+                  <IconButton
+                    tooltip="Settings"
+                    icon={<SettingIcon className="dark:invert h-6 w-6" />}
+                    onClick={settingDisclosure.onOpen}
+                  />
+                  <Popover>
+                    <PopoverTrigger>
+                      <IconButton
+                        tooltip="System Prompt"
+                        icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <div className="min-w-[250px] max-w-[350px]">
+                        <Textarea
+                          className="w-full h-full"
+                          placeholder="System Prompt"
+                          rows={12}
+                          value={generate_system_prompt(context, instruction)}
+                          readOnly
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <IconButton
+                    tooltip={isLoading ? "Cancel" : "Proofread"}
+                    icon={isLoading ? <Spinner color="current" className="h-6 w-6" /> : <EditIcon className="dark:invert h-6 w-6" />}
+                    onClick={() => isLoading ? stop() : handleProofread()}
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex-grow">
-              <DiffEditor
-                className="h-full"
-                language="plaintext"
-                options={{ originalEditable: true, wordWrap: "on" }}
-                theme={theme === "dark" ? "vs-dark" : "vs"}
-                onMount={handleEditorDidMount}
-              />
+          )}
+
+          {/* Desktop controls */}
+          <div className="hidden md:flex items-center gap-3 mb-3">
+            <Select value={model} onValueChange={(value: string) => setModel(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a model" />
+              </SelectTrigger>
+              <SelectContent>
+                {models.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={context} onValueChange={(value: string) => setContext(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a context" />
+              </SelectTrigger>
+              <SelectContent>
+                {contexts.map((context) => (
+                  <SelectItem key={context.key} value={context.key}>
+                    {context.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={instruction} onValueChange={(value: string) => setInstruction(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select an instruction" />
+              </SelectTrigger>
+              <SelectContent>
+                {instructions.map((instruction) => (
+                  <SelectItem key={instruction.key} value={instruction.key}>
+                    {instruction.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Editor headers */}
+          <div className="hidden md:flex items-center mb-2">
+            <div
+              className="flex justify-center font-bold"
+              style={{
+                width: `${leftHeaderWidth ? leftHeaderWidth - 14 : "50%"}px`,
+              }}
+            >
+              Original Text
+            </div>
+            <div className="flex justify-center font-bold flex-1">
+              Modified Text
             </div>
           </div>
-        </CardBody>
+
+          {/* Mobile editor headers */}
+          <div className="flex md:hidden items-center mb-2 text-sm font-medium">
+            <div className="flex-1 text-center">Original</div>
+            <div className="flex-1 text-center">Modified</div>
+          </div>
+
+          {/* Editor */}
+          <div className="flex-1 min-h-0 border rounded-md overflow-hidden">
+            <DiffEditor
+              className="h-full"
+              language="plaintext"
+              options={{ 
+                originalEditable: true, 
+                wordWrap: "on",
+                minimap: { enabled: false },
+                lineNumbers: "on",
+                scrollBeyondLastLine: false,
+                automaticLayout: true
+              }}
+              theme={theme === "dark" ? "vs-dark" : "vs"}
+              onMount={handleEditorDidMount}
+            />
+          </div>
+
+          {/* Mobile action button */}
+          <div className="md:hidden flex justify-center mt-3">
+            <Button 
+              className="w-full"
+              onClick={() => isLoading ? stop() : handleProofread()}
+              disabled={!originalText}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Spinner color="current" className="h-4 w-4" />
+                  Cancel
+                </span>
+              ) : (
+                "Proofread"
+              )}
+            </Button>
+          </div>
+        </CardContent>
       </Card>
+      
+      <SettingModal
+        proofreadError={proofreadError}
+        isOpen={settingDisclosure.isOpen}
+        onOpenChange={settingDisclosure.onOpenChange}
+      />
     </div>
   );
 }

@@ -1,19 +1,55 @@
 import { ReactNode } from "react";
-import { Button, ButtonProps, Tooltip } from "@heroui/react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface IconButtonProps extends ButtonProps {
+interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   tooltip?: ReactNode;
   icon: ReactNode;
-  isExternal?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
 }
 
 export default function IconButton(props: IconButtonProps) {
-  const { tooltip, icon, ...buttonProps } = props;
+  const { tooltip, icon, className, href, target, rel, ...buttonProps } = props;
+  
+  const button = (
+    <Button 
+      variant="ghost" 
+      size="icon" 
+      className={className}
+      asChild={!!href}
+      {...buttonProps}
+    >
+      {href ? (
+        <a href={href} target={target} rel={rel}>
+          {icon}
+        </a>
+      ) : (
+        icon
+      )}
+    </Button>
+  );
+
+  if (!tooltip) {
+    return button;
+  }
+
   return (
-    <Tooltip content={tooltip} closeDelay={0}>
-      <Button className="h-12 w-12" isIconOnly {...buttonProps}>
-        {icon}
-      </Button>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {button}
+        </TooltipTrigger>
+        <TooltipContent>
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

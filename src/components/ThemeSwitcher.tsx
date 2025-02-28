@@ -17,7 +17,7 @@ export function ThemeSwitcher() {
           <LightModeIcon className="dark:invert h-7 w-7" />
         )
       }
-      onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     />
   );
 }

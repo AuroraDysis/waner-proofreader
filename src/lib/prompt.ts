@@ -72,30 +72,37 @@ Linguistic precision:
 export const instructions = [
   {
     key: "basicProofread",
+    label: "Basic Proofread",
     prompt: "proofread the text",
   },
   {
     key: "awkwardParts",
+    label: "Fix Awkward Parts",
     prompt: "fix only awkward parts",
   },
   {
     key: "streamline",
+    label: "Streamline",
     prompt: "streamline any awkward words or phrases",
   },
   {
     key: "polish",
+    label: "Polish",
     prompt: "polish any awkward words or phrases",
   },
   {
     key: "trim",
+    label: "Trim the Fat",
     prompt: "trim the fat",
   },
   {
     key: "clarityAndFlow",
+    label: "Improve Clarity and Flow",
     prompt: "improve clarity and flow",
   },
   {
     key: "significantClarityAndFlow",
+    label: "Significantly Improve Clarity and Flow",
     prompt: "significantly improve clarity and flow",
   },
 ];
