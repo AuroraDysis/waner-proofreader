@@ -12,9 +12,9 @@ export function ThemeSwitcher() {
       tooltip="Toggle Theme"
       icon={
         theme === "dark" ? (
-          <DarkModeIcon className="dark:invert h-7 w-7" />
+          <DarkModeIcon className="h-6 w-6 text-foreground" />
         ) : (
-          <LightModeIcon className="dark:invert h-7 w-7" />
+          <LightModeIcon className="h-6 w-6 text-foreground" />
         )
       }
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}

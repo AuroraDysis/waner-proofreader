@@ -226,7 +226,7 @@ export default function HomePage() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="md:hidden" 
+                className="md:hidden text-foreground" 
                 onClick={toggleMobileMenu}
                 aria-label="Menu"
               >
@@ -241,7 +241,7 @@ export default function HomePage() {
               <div className="hidden md:flex items-center gap-2">
                 <IconButton
                   tooltip="GitHub repository"
-                  icon={<GithubIcon className="dark:invert h-6 w-6" />}
+                  icon={<GithubIcon className="h-6 w-6 text-foreground" />}
                   href="https://github.com/AuroraDysis/waner-proofreader"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -249,14 +249,14 @@ export default function HomePage() {
                 <ThemeSwitcher />
                 <IconButton
                   tooltip="Settings"
-                  icon={<SettingIcon className="dark:invert h-6 w-6" />}
+                  icon={<SettingIcon className="h-6 w-6 text-foreground" />}
                   onClick={settingDisclosure.onOpen}
                 />
                 <Popover>
                   <PopoverTrigger>
                     <IconButton
                       tooltip="System Prompt"
-                      icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                      icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
                     />
                   </PopoverTrigger>
                   <PopoverContent>
@@ -273,7 +273,7 @@ export default function HomePage() {
                 </Popover>
                 <IconButton
                   tooltip={isLoading ? "Cancel" : "Proofread"}
-                  icon={isLoading ? <Spinner color="current" className="h-6 w-6" /> : <EditIcon className="dark:invert h-6 w-6" />}
+                  icon={isLoading ? <Spinner className="h-6 w-6 text-foreground" /> : <EditIcon className="h-6 w-6 text-foreground" />}
                   onClick={() => isLoading ? stop() : handleProofread()}
                 />
               </div>
@@ -325,7 +325,7 @@ export default function HomePage() {
                 <div className="flex justify-between items-center gap-2">
                   <IconButton
                     tooltip="GitHub repository"
-                    icon={<GithubIcon className="dark:invert h-6 w-6" />}
+                    icon={<GithubIcon className="h-6 w-6 text-foreground" />}
                     href="https://github.com/AuroraDysis/waner-proofreader"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -333,14 +333,14 @@ export default function HomePage() {
                   <ThemeSwitcher />
                   <IconButton
                     tooltip="Settings"
-                    icon={<SettingIcon className="dark:invert h-6 w-6" />}
+                    icon={<SettingIcon className="h-6 w-6 text-foreground" />}
                     onClick={settingDisclosure.onOpen}
                   />
                   <Popover>
                     <PopoverTrigger>
                       <IconButton
                         tooltip="System Prompt"
-                        icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                        icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
                       />
                     </PopoverTrigger>
                     <PopoverContent>
@@ -357,7 +357,7 @@ export default function HomePage() {
                   </Popover>
                   <IconButton
                     tooltip={isLoading ? "Cancel" : "Proofread"}
-                    icon={isLoading ? <Spinner color="current" className="h-6 w-6" /> : <EditIcon className="dark:invert h-6 w-6" />}
+                    icon={isLoading ? <Spinner className="h-6 w-6 text-foreground" /> : <EditIcon className="h-6 w-6 text-foreground" />}
                     onClick={() => isLoading ? stop() : handleProofread()}
                   />
                 </div>
@@ -453,7 +453,7 @@ export default function HomePage() {
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <Spinner color="current" className="h-4 w-4" />
+                  <Spinner className="h-4 w-4 text-foreground" />
                   Cancel
                 </span>
               ) : (

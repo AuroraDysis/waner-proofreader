@@ -19,9 +19,9 @@ export default function IconButton(props: IconButtonProps) {
   const { tooltip, icon, className, href, target, rel, ...buttonProps } = props;
   
   const button = (
-    <Button 
-      variant="ghost" 
-      size="icon" 
+    <Button
+      variant="ghost"
+      size="icon"
       className={className}
       asChild={!!href}
       {...buttonProps}
