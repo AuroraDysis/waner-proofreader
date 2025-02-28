@@ -400,7 +400,7 @@ export default function HomePage() {
                 onClick={settingDisclosure.onOpen}
               />
               <Popover>
-                <PopoverTrigger>
+                <PopoverTrigger asChild>
                   <IconButton
                     tooltip="System Prompt"
                     icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
@@ -502,7 +502,7 @@ export default function HomePage() {
                     onClick={settingDisclosure.onOpen}
                   />
                   <Popover>
-                    <PopoverTrigger>
+                    <PopoverTrigger asChild>
                       <IconButton
                         tooltip="System Prompt"
                         icon={

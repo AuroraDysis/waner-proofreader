@@ -13,17 +13,18 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   href?: string;
   target?: string;
   rel?: string;
+  asChild?: boolean;
 }
 
 export default function IconButton(props: IconButtonProps) {
-  const { tooltip, icon, className, href, target, rel, ...buttonProps } = props;
+  const { tooltip, icon, className, href, target, rel, asChild, ...buttonProps } = props;
   
   const button = (
     <Button
       variant="ghost"
       size="icon"
       className={className}
-      asChild={!!href}
+      asChild={!!href || !!asChild}
       {...buttonProps}
     >
       {href ? (
