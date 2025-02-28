@@ -1,10 +1,9 @@
 import { cn } from "@/lib/utils";
 
 interface SpinnerProps extends React.SVGProps<SVGSVGElement> {
-  color?: string;
 }
 
-export default function Spinner({ className, color, ...props }: SpinnerProps) {
+export default function Spinner({ className, ...props }: SpinnerProps) {
   return (
     <svg
       className={cn("animate-spin", className)}

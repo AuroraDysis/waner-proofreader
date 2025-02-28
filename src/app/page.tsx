@@ -18,8 +18,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   Popover,
@@ -36,6 +34,8 @@ import {
   LightbulbIcon,
   GithubIcon,
   SettingIcon,
+  CloseIcon,
+  MenuIcon,
 } from "@/components/Icon";
 
 import {
@@ -230,13 +230,7 @@ export default function HomePage() {
                 onClick={toggleMobileMenu}
                 aria-label="Menu"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  {mobileMenuOpen ? (
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  ) : (
-                    <path d="M3 12h18M3 6h18M3 18h18" />
-                  )}
-                </svg>
+                {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
               </Button>
               <div className="hidden md:flex items-center gap-2">
                 <IconButton
@@ -259,12 +253,12 @@ export default function HomePage() {
                       icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
                     />
                   </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="min-w-[300px] max-w-[500px]">
+                  <PopoverContent side="bottom" align="end" className="w-[90vw] sm:w-[500px]">
+                    <div className="max-h-[60vh] overflow-y-auto">
                       <Textarea
-                        className="w-full h-full"
+                        className="w-full h-full min-h-[200px]"
                         placeholder="System Prompt"
-                        rows={16}
+                        rows={12}
                         value={generate_system_prompt(context, instruction)}
                         readOnly
                       />
@@ -343,10 +337,10 @@ export default function HomePage() {
                         icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
                       />
                     </PopoverTrigger>
-                    <PopoverContent>
-                      <div className="min-w-[250px] max-w-[350px]">
+                    <PopoverContent side="bottom" align="end" className="w-[90vw] sm:w-[500px]">
+                      <div className="max-h-[60vh] overflow-y-auto">
                         <Textarea
-                          className="w-full h-full"
+                          className="w-full h-full min-h-[200px]"
                           placeholder="System Prompt"
                           rows={12}
                           value={generate_system_prompt(context, instruction)}

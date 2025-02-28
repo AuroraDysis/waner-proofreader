@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LinkIcon, LockIcon } from "@/components/Icon";
 import useLocalStorageState from "use-local-storage-state";
-import { useEffect, useState } from "react";
 
 export interface SettingModalProps {
   proofreadError: string | null;
