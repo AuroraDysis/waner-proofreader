@@ -325,9 +325,11 @@ export default function HomePage() {
     );
   };
 
-  const [activeTab, setActiveTab] = useState<"original" | "modified">(
-    "original"
-  );
+  const [activeTab, setActiveTab] = useLocalStorageState<
+    "original" | "modified"
+  >("activeTab", {
+    defaultValue: "original",
+  });
 
   return (
     <div className="h-screen w-full flex flex-col p-2 sm:p-4">
