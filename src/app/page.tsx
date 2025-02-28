@@ -217,7 +217,7 @@ export default function HomePage() {
       keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
       EditorState.allowMultipleSelections.of(true),
       EditorView.domEventHandlers({
-        paste(event, _view) {
+        paste(event) {
           // Prevent CodeMirror from handling paste events with files/images
           // We only want to handle text paste events
           const clipboardData = event.clipboardData;
