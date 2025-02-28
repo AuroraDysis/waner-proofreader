@@ -216,22 +216,6 @@ export default function HomePage() {
       history(),
       keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
       EditorState.allowMultipleSelections.of(true),
-      EditorView.domEventHandlers({
-        paste(event) {
-          // Prevent CodeMirror from handling paste events with files/images
-          // We only want to handle text paste events
-          const clipboardData = event.clipboardData;
-          if (
-            clipboardData &&
-            clipboardData.files &&
-            clipboardData.files.length > 0
-          ) {
-            event.preventDefault();
-            return true;
-          }
-          return false;
-        },
-      }),
     ];
 
     // For mobile, use a single-column layout with tabs
