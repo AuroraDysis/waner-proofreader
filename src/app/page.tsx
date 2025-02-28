@@ -13,12 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Popover,
   PopoverContent,
@@ -54,7 +49,7 @@ import Spinner from "@/components/Spinner";
 function useIsServerRender() {
   const isServerRender = useSyncExternalStore(
     () => {
-      return () => { };
+      return () => {};
     },
     () => false,
     () => true
@@ -202,14 +197,14 @@ export default function HomePage() {
     }
   };
 
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const monaco = useMonaco();
   useEffect(() => {
     if (editorMounted && monaco) {
-      monaco.editor.setTheme(theme === "dark" ? "vs-dark" : "vs");
+      monaco.editor.setTheme(resolvedTheme === "dark" ? "vs-dark" : "vs");
     }
-  }, [monaco, theme, editorMounted]);
+  }, [monaco, resolvedTheme, editorMounted]);
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -221,12 +216,14 @@ export default function HomePage() {
       <Card className="flex-1 flex flex-col overflow-hidden">
         <CardHeader className="p-3 sm:p-4 pb-0 sm:pb-0">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg sm:text-xl">Waner Proofreader</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">
+              Waner Proofreader
+            </CardTitle>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="md:hidden text-foreground" 
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden text-foreground"
                 onClick={toggleMobileMenu}
                 aria-label="Menu"
               >
@@ -250,10 +247,16 @@ export default function HomePage() {
                   <PopoverTrigger>
                     <IconButton
                       tooltip="System Prompt"
-                      icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
+                      icon={
+                        <LightbulbIcon className="h-6 w-6 text-foreground" />
+                      }
                     />
                   </PopoverTrigger>
-                  <PopoverContent side="bottom" align="end" className="w-[90vw] sm:w-[500px]">
+                  <PopoverContent
+                    side="bottom"
+                    align="end"
+                    className="w-[90vw] sm:w-[500px]"
+                  >
                     <div className="max-h-[60vh] overflow-y-auto">
                       <Textarea
                         className="w-full h-full min-h-[200px]"
@@ -267,8 +270,14 @@ export default function HomePage() {
                 </Popover>
                 <IconButton
                   tooltip={isLoading ? "Cancel" : "Proofread"}
-                  icon={isLoading ? <Spinner className="h-6 w-6 text-foreground" /> : <EditIcon className="h-6 w-6 text-foreground" />}
-                  onClick={() => isLoading ? stop() : handleProofread()}
+                  icon={
+                    isLoading ? (
+                      <Spinner className="h-6 w-6 text-foreground" />
+                    ) : (
+                      <EditIcon className="h-6 w-6 text-foreground" />
+                    )
+                  }
+                  onClick={() => (isLoading ? stop() : handleProofread())}
                 />
               </div>
             </div>
@@ -280,7 +289,10 @@ export default function HomePage() {
           {mobileMenuOpen && (
             <div className="md:hidden p-3 bg-muted/20 rounded-md mb-3">
               <div className="grid grid-cols-1 gap-3">
-                <Select value={model} onValueChange={(value: string) => setModel(value)}>
+                <Select
+                  value={model}
+                  onValueChange={(value: string) => setModel(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
@@ -292,7 +304,10 @@ export default function HomePage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={context} onValueChange={(value: string) => setContext(value)}>
+                <Select
+                  value={context}
+                  onValueChange={(value: string) => setContext(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a context" />
                   </SelectTrigger>
@@ -304,7 +319,10 @@ export default function HomePage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={instruction} onValueChange={(value: string) => setInstruction(value)}>
+                <Select
+                  value={instruction}
+                  onValueChange={(value: string) => setInstruction(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select an instruction" />
                   </SelectTrigger>
@@ -334,10 +352,16 @@ export default function HomePage() {
                     <PopoverTrigger>
                       <IconButton
                         tooltip="System Prompt"
-                        icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
+                        icon={
+                          <LightbulbIcon className="h-6 w-6 text-foreground" />
+                        }
                       />
                     </PopoverTrigger>
-                    <PopoverContent side="bottom" align="end" className="w-[90vw] sm:w-[500px]">
+                    <PopoverContent
+                      side="bottom"
+                      align="end"
+                      className="w-[90vw] sm:w-[500px]"
+                    >
                       <div className="max-h-[60vh] overflow-y-auto">
                         <Textarea
                           className="w-full h-full min-h-[200px]"
@@ -351,8 +375,14 @@ export default function HomePage() {
                   </Popover>
                   <IconButton
                     tooltip={isLoading ? "Cancel" : "Proofread"}
-                    icon={isLoading ? <Spinner className="h-6 w-6 text-foreground" /> : <EditIcon className="h-6 w-6 text-foreground" />}
-                    onClick={() => isLoading ? stop() : handleProofread()}
+                    icon={
+                      isLoading ? (
+                        <Spinner className="h-6 w-6 text-foreground" />
+                      ) : (
+                        <EditIcon className="h-6 w-6 text-foreground" />
+                      )
+                    }
+                    onClick={() => (isLoading ? stop() : handleProofread())}
                   />
                 </div>
               </div>
@@ -361,7 +391,10 @@ export default function HomePage() {
 
           {/* Desktop controls */}
           <div className="hidden md:flex items-center gap-3 mb-3">
-            <Select value={model} onValueChange={(value: string) => setModel(value)}>
+            <Select
+              value={model}
+              onValueChange={(value: string) => setModel(value)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
@@ -373,7 +406,10 @@ export default function HomePage() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={context} onValueChange={(value: string) => setContext(value)}>
+            <Select
+              value={context}
+              onValueChange={(value: string) => setContext(value)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a context" />
               </SelectTrigger>
@@ -385,7 +421,10 @@ export default function HomePage() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={instruction} onValueChange={(value: string) => setInstruction(value)}>
+            <Select
+              value={instruction}
+              onValueChange={(value: string) => setInstruction(value)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select an instruction" />
               </SelectTrigger>
@@ -425,24 +464,24 @@ export default function HomePage() {
             <DiffEditor
               className="h-full"
               language="plaintext"
-              options={{ 
-                originalEditable: true, 
+              options={{
+                originalEditable: true,
                 wordWrap: "on",
                 minimap: { enabled: false },
                 lineNumbers: "on",
                 scrollBeyondLastLine: false,
-                automaticLayout: true
+                automaticLayout: true,
               }}
-              theme={theme === "dark" ? "vs-dark" : "vs"}
+              theme={resolvedTheme === "dark" ? "vs-dark" : "vs"}
               onMount={handleEditorDidMount}
             />
           </div>
 
           {/* Mobile action button */}
           <div className="md:hidden flex justify-center mt-3">
-            <Button 
+            <Button
               className="w-full"
-              onClick={() => isLoading ? stop() : handleProofread()}
+              onClick={() => (isLoading ? stop() : handleProofread())}
               disabled={!originalText}
             >
               {isLoading ? (
@@ -457,7 +496,7 @@ export default function HomePage() {
           </div>
         </CardContent>
       </Card>
-      
+
       <SettingModal
         proofreadError={proofreadError}
         isOpen={settingDisclosure.isOpen}
