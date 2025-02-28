@@ -67,7 +67,6 @@ function useIsServerRender() {
 }
 
 export default function HomePage() {
-  const [editorMounted, setEditorMounted] = useState(false);
   const settingDisclosure = useDisclosure();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -160,7 +159,7 @@ export default function HomePage() {
     if (completion) {
       setModifiedText(completion);
     }
-  }, [completion]);
+  }, [completion, setModifiedText]);
 
   const handleProofread = async () => {
     if (originalText) {
@@ -218,7 +217,7 @@ export default function HomePage() {
       keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
       EditorState.allowMultipleSelections.of(true),
       EditorView.domEventHandlers({
-        paste(event, view) {
+        paste(event, _view) {
           // Prevent CodeMirror from handling paste events with files/images
           // We only want to handle text paste events
           const clipboardData = event.clipboardData;
