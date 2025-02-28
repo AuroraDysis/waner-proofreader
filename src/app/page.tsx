@@ -216,6 +216,7 @@ export default function HomePage() {
       <Card className="flex-1 flex flex-col overflow-hidden">
         <CardHeader className="p-3 sm:p-4 pb-0 sm:pb-0">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div className="flex justify-between items-center w-full md:w-auto">
               <CardTitle className="text-lg sm:text-xl">
                 Waner Proofreader
               </CardTitle>
