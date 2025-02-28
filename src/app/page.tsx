@@ -384,6 +384,7 @@ export default function HomePage() {
               <Select
                 value={instruction}
                 onValueChange={(value: string) => setInstruction(value)}
+                disabled={context === "academic"}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select an instruction" />
