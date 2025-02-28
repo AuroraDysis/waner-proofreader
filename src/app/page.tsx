@@ -215,11 +215,10 @@ export default function HomePage() {
     <div className="h-screen w-full flex flex-col p-2 sm:p-4">
       <Card className="flex-1 flex flex-col overflow-hidden">
         <CardHeader className="p-3 sm:p-4 pb-0 sm:pb-0">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg sm:text-xl">
-              Waner Proofreader
-            </CardTitle>
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <CardTitle className="text-lg sm:text-xl">
+                Waner Proofreader
+              </CardTitle>
               <Button
                 variant="ghost"
                 size="icon"
@@ -229,57 +228,107 @@ export default function HomePage() {
               >
                 {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
               </Button>
-              <div className="hidden md:flex items-center gap-2">
-                <IconButton
-                  tooltip="GitHub repository"
-                  icon={<GithubIcon className="h-6 w-6 text-foreground" />}
-                  href="https://github.com/AuroraDysis/waner-proofreader"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-                <ThemeSwitcher />
-                <IconButton
-                  tooltip="Settings"
-                  icon={<SettingIcon className="h-6 w-6 text-foreground" />}
-                  onClick={settingDisclosure.onOpen}
-                />
-                <Popover>
-                  <PopoverTrigger>
-                    <IconButton
-                      tooltip="System Prompt"
-                      icon={
-                        <LightbulbIcon className="h-6 w-6 text-foreground" />
-                      }
+            </div>
+            
+            {/* Desktop controls - moved here to be on the same line as title */}
+            <div className="hidden md:flex items-center gap-3 flex-1 ml-4">
+              <Select
+                value={model}
+                onValueChange={(value: string) => setModel(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {models.map((model) => (
+                    <SelectItem key={model} value={model}>
+                      {model}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={context}
+                onValueChange={(value: string) => setContext(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a context" />
+                </SelectTrigger>
+                <SelectContent>
+                  {contexts.map((context) => (
+                    <SelectItem key={context.key} value={context.key}>
+                      {context.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={instruction}
+                onValueChange={(value: string) => setInstruction(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select an instruction" />
+                </SelectTrigger>
+                <SelectContent>
+                  {instructions.map((instruction) => (
+                    <SelectItem key={instruction.key} value={instruction.key}>
+                      {instruction.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-2">
+              <IconButton
+                tooltip="GitHub repository"
+                icon={<GithubIcon className="h-6 w-6 text-foreground" />}
+                href="https://github.com/AuroraDysis/waner-proofreader"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+              <ThemeSwitcher />
+              <IconButton
+                tooltip="Settings"
+                icon={<SettingIcon className="h-6 w-6 text-foreground" />}
+                onClick={settingDisclosure.onOpen}
+              />
+              <Popover>
+                <PopoverTrigger>
+                  <IconButton
+                    tooltip="System Prompt"
+                    icon={
+                      <LightbulbIcon className="h-6 w-6 text-foreground" />
+                    }
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  side="bottom"
+                  align="end"
+                  className="w-[90vw] sm:w-[500px]"
+                >
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    <Textarea
+                      className="w-full h-full min-h-[200px]"
+                      placeholder="System Prompt"
+                      rows={12}
+                      value={generate_system_prompt(context, instruction)}
+                      readOnly
                     />
-                  </PopoverTrigger>
-                  <PopoverContent
-                    side="bottom"
-                    align="end"
-                    className="w-[90vw] sm:w-[500px]"
-                  >
-                    <div className="max-h-[60vh] overflow-y-auto">
-                      <Textarea
-                        className="w-full h-full min-h-[200px]"
-                        placeholder="System Prompt"
-                        rows={12}
-                        value={generate_system_prompt(context, instruction)}
-                        readOnly
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <IconButton
-                  tooltip={isLoading ? "Cancel" : "Proofread"}
-                  icon={
-                    isLoading ? (
-                      <Spinner className="h-6 w-6 text-foreground" />
-                    ) : (
-                      <EditIcon className="h-6 w-6 text-foreground" />
-                    )
-                  }
-                  onClick={() => (isLoading ? stop() : handleProofread())}
-                />
-              </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <IconButton
+                tooltip={isLoading ? "Cancel" : "Proofread"}
+                icon={
+                  isLoading ? (
+                    <Spinner className="h-6 w-6 text-foreground" />
+                  ) : (
+                    <EditIcon className="h-6 w-6 text-foreground" />
+                  )
+                }
+                onClick={() => (isLoading ? stop() : handleProofread())}
+              />
             </div>
           </div>
         </CardHeader>
@@ -389,55 +438,6 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Desktop controls */}
-          <div className="hidden md:flex items-center gap-3 mb-3">
-            <Select
-              value={model}
-              onValueChange={(value: string) => setModel(value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a model" />
-              </SelectTrigger>
-              <SelectContent>
-                {models.map((model) => (
-                  <SelectItem key={model} value={model}>
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={context}
-              onValueChange={(value: string) => setContext(value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a context" />
-              </SelectTrigger>
-              <SelectContent>
-                {contexts.map((context) => (
-                  <SelectItem key={context.key} value={context.key}>
-                    {context.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={instruction}
-              onValueChange={(value: string) => setInstruction(value)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select an instruction" />
-              </SelectTrigger>
-              <SelectContent>
-                {instructions.map((instruction) => (
-                  <SelectItem key={instruction.key} value={instruction.key}>
-                    {instruction.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Editor headers */}
           <div className="hidden md:flex items-center mb-2">
             <div
@@ -486,7 +486,7 @@ export default function HomePage() {
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <Spinner className="h-4 w-4 text-foreground" />
+                  <Spinner className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
                   Cancel
                 </span>
               ) : (
