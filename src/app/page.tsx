@@ -21,8 +21,17 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { DiffEditor, useMonaco } from "@monaco-editor/react";
-import type { MonacoDiffEditor } from "@monaco-editor/react";
+import CodeMirror from "@uiw/react-codemirror";
+import CodeMirrorMerge from "react-codemirror-merge";
+import { EditorView, keymap } from "@codemirror/view";
+import { oneDark } from "@codemirror/theme-one-dark";
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentWithTab,
+} from "@codemirror/commands";
+import { EditorState } from "@codemirror/state";
 
 import {
   EditIcon,
@@ -59,8 +68,6 @@ function useIsServerRender() {
 
 export default function HomePage() {
   const [editorMounted, setEditorMounted] = useState(false);
-  const editorRef = useRef<MonacoDiffEditor | null>(null);
-
   const settingDisclosure = useDisclosure();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -96,9 +103,23 @@ export default function HomePage() {
     defaultValue: "",
   });
 
-  const [leftHeaderWidth, setLeftHeaderWidth] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const isServerRender = useIsServerRender();
+
+  // Handle responsive layout
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -117,45 +138,12 @@ export default function HomePage() {
     }
   }, [isServerRender]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Initialize the text in the editor
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (isServerRender || !editorMounted) {
-      return;
-    }
-    editorRef.current?.getOriginalEditor().setValue(originalText);
-    editorRef.current?.getModifiedEditor().setValue(modifiedText);
-  }, [isServerRender, editorMounted]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleOriginalChange = (value: string) => {
+    setOriginalText(value);
+  };
 
-  const handleEditorDidMount = (editor: MonacoDiffEditor) => {
-    editorRef.current = editor;
-
-    const handleOriginalContentChange = () => {
-      const value = editor.getOriginalEditor().getValue();
-      if (value !== originalText) {
-        setOriginalText(value);
-      }
-    };
-
-    const handleModifiedContentChange = () => {
-      const value = editor.getModifiedEditor().getValue();
-      if (value !== modifiedText) {
-        setModifiedText(value);
-      }
-    };
-
-    editor
-      .getOriginalEditor()
-      .onDidChangeModelContent(handleOriginalContentChange);
-    editor
-      .getModifiedEditor()
-      .onDidChangeModelContent(handleModifiedContentChange);
-
-    editor.getOriginalEditor().onDidLayoutChange((layout) => {
-      setLeftHeaderWidth(layout.width);
-    });
-
-    setEditorMounted(true);
+  const handleModifiedChange = (value: string) => {
+    setModifiedText(value);
   };
 
   const { completion, complete, isLoading, stop } = useCompletion({
@@ -170,12 +158,12 @@ export default function HomePage() {
 
   useEffect(() => {
     if (completion) {
-      editorRef.current?.getModifiedEditor().setValue(completion);
+      setModifiedText(completion);
     }
   }, [completion]);
 
   const handleProofread = async () => {
-    if (editorRef.current) {
+    if (originalText) {
       let currentModel = model;
       if (!models.includes(model)) {
         setModel(models[0]);
@@ -199,17 +187,148 @@ export default function HomePage() {
 
   const { resolvedTheme } = useTheme();
 
-  const monaco = useMonaco();
-  useEffect(() => {
-    if (editorMounted && monaco) {
-      monaco.editor.setTheme(resolvedTheme === "dark" ? "vs-dark" : "vs");
-    }
-  }, [monaco, resolvedTheme, editorMounted]);
+  // Get theme based on the current app theme
+  const getEditorTheme = () => {
+    return resolvedTheme === "dark" ? oneDark : [];
+  };
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  // Render the appropriate editor based on device type
+  const renderDiffEditor = () => {
+    const Original = CodeMirrorMerge.Original;
+    const Modified = CodeMirrorMerge.Modified;
+
+    // Common setup for all editors
+    const commonSetup = {
+      lineNumbers: true,
+      highlightActiveLine: true,
+      highlightActiveLineGutter: true,
+      foldGutter: true,
+    };
+
+    // Common extensions for all editors
+    const commonExtensions = [
+      EditorView.lineWrapping,
+      getEditorTheme(),
+      history(),
+      keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+      EditorState.allowMultipleSelections.of(true),
+      EditorView.domEventHandlers({
+        paste(event, view) {
+          // Prevent CodeMirror from handling paste events with files/images
+          // We only want to handle text paste events
+          const clipboardData = event.clipboardData;
+          if (
+            clipboardData &&
+            clipboardData.files &&
+            clipboardData.files.length > 0
+          ) {
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
+      }),
+    ];
+
+    // For mobile, use a single-column layout with tabs
+    if (isMobile) {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="flex border-b">
+            <button
+              className={`flex-1 p-3 text-center font-medium transition-colors ${
+                activeTab === "original"
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-muted-foreground"
+              }`}
+              onClick={() => setActiveTab("original")}
+              aria-label="Switch to original text"
+            >
+              Original
+            </button>
+            <button
+              className={`flex-1 p-3 text-center font-medium transition-colors ${
+                activeTab === "modified"
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-muted-foreground"
+              }`}
+              onClick={() => setActiveTab("modified")}
+              aria-label="Switch to modified text"
+            >
+              Modified
+            </button>
+          </div>
+          <div className="flex-1 min-h-0 overflow-hidden">
+            {activeTab === "original" ? (
+              <CodeMirror
+                value={originalText}
+                onChange={handleOriginalChange}
+                height="100%"
+                width="100%"
+                basicSetup={commonSetup}
+                extensions={commonExtensions}
+                className="h-full w-full"
+                placeholder="Type or paste your text here to proofread..."
+                style={{ height: "100%" }}
+                autoFocus={activeTab === "original"}
+              />
+            ) : (
+              <CodeMirror
+                value={modifiedText}
+                onChange={handleModifiedChange}
+                height="100%"
+                width="100%"
+                basicSetup={commonSetup}
+                extensions={commonExtensions}
+                className="h-full w-full"
+                readOnly={isLoading}
+                placeholder="Proofread text will appear here..."
+                style={{ height: "100%" }}
+                autoFocus={activeTab === "modified"}
+              />
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // For desktop, use the side-by-side diff view
+    return (
+      <CodeMirrorMerge
+        className="h-full w-full"
+        style={{ height: "100%" }}
+        revertControls="b-to-a"
+        collapseUnchanged={{
+          margin: 3, // Keep 3 unchanged lines around changes for context
+        }}
+      >
+        <Original
+          value={originalText}
+          onChange={handleOriginalChange}
+          basicSetup={commonSetup}
+          extensions={commonExtensions}
+          placeholder="Type or paste your text here to proofread..."
+        />
+        <Modified
+          value={modifiedText}
+          onChange={handleModifiedChange}
+          basicSetup={commonSetup}
+          extensions={commonExtensions}
+          readOnly={isLoading}
+          placeholder="Proofread text will appear here..."
+        />
+      </CodeMirrorMerge>
+    );
+  };
+
+  const [activeTab, setActiveTab] = useState<"original" | "modified">(
+    "original"
+  );
 
   return (
     <div className="h-screen w-full flex flex-col p-2 sm:p-4">
@@ -230,7 +349,7 @@ export default function HomePage() {
                 {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
               </Button>
             </div>
-            
+
             {/* Desktop controls - moved here to be on the same line as title */}
             <div className="hidden md:flex items-center gap-3 flex-1 ml-4">
               <Select
@@ -279,7 +398,7 @@ export default function HomePage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="hidden md:flex items-center gap-2">
               <IconButton
                 tooltip="GitHub repository"
@@ -298,9 +417,7 @@ export default function HomePage() {
                 <PopoverTrigger>
                   <IconButton
                     tooltip="System Prompt"
-                    icon={
-                      <LightbulbIcon className="h-6 w-6 text-foreground" />
-                    }
+                    icon={<LightbulbIcon className="h-6 w-6 text-foreground" />}
                   />
                 </PopoverTrigger>
                 <PopoverContent
@@ -439,43 +556,19 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Editor headers */}
+          {/* Editor headers - only show on desktop */}
           <div className="hidden md:flex items-center mb-2">
-            <div
-              className="flex justify-center font-bold"
-              style={{
-                width: `${leftHeaderWidth ? leftHeaderWidth - 14 : "50%"}px`,
-              }}
-            >
+            <div className="flex justify-center font-bold w-1/2">
               Original Text
             </div>
-            <div className="flex justify-center font-bold flex-1">
+            <div className="flex justify-center font-bold w-1/2">
               Modified Text
             </div>
           </div>
 
-          {/* Mobile editor headers */}
-          <div className="flex md:hidden items-center mb-2 text-sm font-medium">
-            <div className="flex-1 text-center">Original</div>
-            <div className="flex-1 text-center">Modified</div>
-          </div>
-
           {/* Editor */}
-          <div className="flex-1 min-h-0 border rounded-md overflow-hidden">
-            <DiffEditor
-              className="h-full"
-              language="plaintext"
-              options={{
-                originalEditable: true,
-                wordWrap: "on",
-                minimap: { enabled: false },
-                lineNumbers: "on",
-                scrollBeyondLastLine: false,
-                automaticLayout: true,
-              }}
-              theme={resolvedTheme === "dark" ? "vs-dark" : "vs"}
-              onMount={handleEditorDidMount}
-            />
+          <div className="flex-1 min-h-0 border rounded-md overflow-hidden flex flex-col">
+            {renderDiffEditor()}
           </div>
 
           {/* Mobile action button */}
