@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { useCompletion } from "ai/react";
 import { useTheme } from "next-themes";
@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import CodeMirror from "@uiw/react-codemirror";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { EditorView, keymap } from "@codemirror/view";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
 import {
   defaultKeymap,
   history,
@@ -189,7 +189,7 @@ export default function HomePage() {
 
   // Get theme based on the current app theme
   const getEditorTheme = () => {
-    return resolvedTheme === "dark" ? oneDark : [];
+    return resolvedTheme === "dark" ? githubDark : githubLight;
   };
 
   // Toggle mobile menu
