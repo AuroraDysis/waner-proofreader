@@ -75,19 +75,11 @@
 /* Original editor (deleted text styling) */
 .cm-merge-a .cm-content .cm-changedText,
 .cm-merge-a .cm-line .cm-changedText {
-  background-color: hsl(var(--highlight-deleted-bg));
-  border-radius: 2px;
-  padding: 0 2px;
-  margin: 0 -2px;
-  box-shadow: 0 0 0 1px hsla(var(--highlight-deleted-bg), 0.5);
+  background: hsl(var(--highlight-deleted-bg));
 }
 
 /* Modified editor (added text styling) */
 .cm-merge-b .cm-content .cm-changedText,
 .cm-merge-b .cm-line .cm-changedText {
-  background-color: hsl(var(--highlight-added-bg));
-  border-radius: 2px;
-  padding: 0 2px;
-  margin: 0 -2px;
-  box-shadow: 0 0 0 1px hsla(var(--highlight-added-bg), 0.5);
+  background: hsl(var(--highlight-added-bg));
 }
