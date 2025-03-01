@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import useLocalStorageState from "use-local-storage-state";
-import { useCompletion } from "@ai-sdk/react";
+import { useCompletion } from "ai/react";
 import { useTheme } from "next-themes";
 
 import {
