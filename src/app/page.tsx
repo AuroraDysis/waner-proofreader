@@ -21,17 +21,12 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import CodeMirror from "@uiw/react-codemirror";
-import CodeMirrorMerge from "react-codemirror-merge";
-import { EditorView, keymap } from "@codemirror/view";
-import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  indentWithTab,
-} from "@codemirror/commands";
-import { EditorState } from "@codemirror/state";
+
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-text";
+import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 import {
   EditIcon,
@@ -188,7 +183,7 @@ export default function HomePage() {
 
   // Get theme based on the current app theme
   const getEditorTheme = () => {
-    return resolvedTheme === "dark" ? githubDark : githubLight;
+    return resolvedTheme === "dark" ? "monokai" : "github";
   };
 
   // Toggle mobile menu
@@ -198,25 +193,24 @@ export default function HomePage() {
 
   // Render the appropriate editor based on device type
   const renderDiffEditor = () => {
-    const Original = CodeMirrorMerge.Original;
-    const Modified = CodeMirrorMerge.Modified;
-
     // Common setup for all editors
-    const commonSetup = {
-      lineNumbers: true,
+    const commonProps = {
+      fontSize: 14,
+      showPrintMargin: false,
       highlightActiveLine: true,
-      highlightActiveLineGutter: true,
-      foldGutter: true,
+      width: "100%",
+      height: "100%",
+      theme: getEditorTheme(),
+      setOptions: {
+        useWorker: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        enableSnippets: true,
+        showLineNumbers: true,
+        tabSize: 2,
+        wrap: true,
+      },
     };
-
-    // Common extensions for all editors
-    const commonExtensions = [
-      EditorView.lineWrapping,
-      getEditorTheme(),
-      history(),
-      keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-      EditorState.allowMultipleSelections.of(true),
-    ];
 
     // For mobile, use a single-column layout with tabs
     if (isMobile) {
@@ -248,31 +242,23 @@ export default function HomePage() {
           </div>
           <div className="flex-1 min-h-0 overflow-hidden">
             {activeTab === "original" ? (
-              <CodeMirror
+              <AceEditor
+                mode="text"
                 value={originalText}
                 onChange={handleOriginalChange}
-                height="100%"
-                width="100%"
-                basicSetup={commonSetup}
-                extensions={commonExtensions}
-                className="h-full w-full"
+                name="original-editor"
                 placeholder="Type or paste your text here to proofread..."
-                style={{ height: "100%" }}
-                autoFocus={activeTab === "original"}
+                {...commonProps}
               />
             ) : (
-              <CodeMirror
+              <AceEditor
+                mode="text"
                 value={modifiedText}
                 onChange={handleModifiedChange}
-                height="100%"
-                width="100%"
-                basicSetup={commonSetup}
-                extensions={commonExtensions}
-                className="h-full w-full"
-                readOnly={isLoading}
+                name="modified-editor"
                 placeholder="Proofread text will appear here..."
-                style={{ height: "100%" }}
-                autoFocus={activeTab === "modified"}
+                readOnly={isLoading}
+                {...commonProps}
               />
             )}
           </div>
@@ -280,32 +266,31 @@ export default function HomePage() {
       );
     }
 
-    // For desktop, use the side-by-side diff view
+    // For desktop, use the side-by-side view
     return (
-      <CodeMirrorMerge
-        className="h-full w-full"
-        style={{ height: "100%" }}
-        revertControls="b-to-a"
-        collapseUnchanged={{
-          margin: 3, // Keep 3 unchanged lines around changes for context
-        }}
-      >
-        <Original
-          value={originalText}
-          onChange={handleOriginalChange}
-          basicSetup={commonSetup}
-          extensions={commonExtensions}
-          placeholder="Type or paste your text here to proofread..."
-        />
-        <Modified
-          value={modifiedText}
-          onChange={handleModifiedChange}
-          basicSetup={commonSetup}
-          extensions={commonExtensions}
-          readOnly={isLoading}
-          placeholder="Proofread text will appear here..."
-        />
-      </CodeMirrorMerge>
+      <div className="flex h-full w-full" style={{ height: "100%" }}>
+        <div className="w-1/2 h-full border-r">
+          <AceEditor
+            mode="text"
+            value={originalText}
+            onChange={handleOriginalChange}
+            name="original-editor"
+            placeholder="Type or paste your text here to proofread..."
+            {...commonProps}
+          />
+        </div>
+        <div className="w-1/2 h-full">
+          <AceEditor
+            mode="text"
+            value={modifiedText}
+            onChange={handleModifiedChange}
+            name="modified-editor"
+            placeholder="Proofread text will appear here..."
+            readOnly={isLoading}
+            {...commonProps}
+          />
+        </div>
+      </div>
     );
   };
 
