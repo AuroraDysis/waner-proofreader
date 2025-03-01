@@ -71,17 +71,19 @@
   }
 }
 
-/* CodeMirror custom styles */
-/* Original editor (deleted text styling) */
-.cm-merge-a .cm-content .cm-changedText,
-.cm-merge-a .cm-line .cm-changedText {
-  background: none;
-  background-color: var(--highlight-deleted-bg);
+.codeMarker {
+  background: #fff677;
+  position: absolute;
+  z-index: 20;
 }
 
-/* Modified editor (added text styling) */
-.cm-merge-b .cm-content .cm-changedText,
-.cm-merge-b .cm-line .cm-changedText {
-  background: none;
-  background-color: var(--highlight-added-bg);
+/* Add styles for diff highlighting */
+.ace-diff-added {
+  position: absolute;
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+.ace-diff-removed {
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.2);
 }

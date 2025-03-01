@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore, useRef } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import { useCompletion } from "ai/react";
 import { useTheme } from "next-themes";
@@ -23,10 +23,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 import AceEditor from "react-ace";
+import { diff as DiffEditor } from "react-ace";
 import "ace-builds/src-noconflict/mode-text";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
+import ace from 'ace-builds';
 
 import {
   EditIcon,
@@ -100,6 +102,10 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
 
   const isServerRender = useIsServerRender();
+
+  // References to the ace editors - keep for mobile view
+  const originalEditorRef = useRef<any>(null);
+  const modifiedEditorRef = useRef<any>(null);
 
   // Handle responsive layout
   useEffect(() => {
@@ -195,7 +201,7 @@ export default function HomePage() {
   const renderDiffEditor = () => {
     // Common setup for all editors
     const commonProps = {
-      fontSize: 14,
+      fontSize: 16,
       showPrintMargin: false,
       highlightActiveLine: true,
       width: "100%",
@@ -243,6 +249,7 @@ export default function HomePage() {
           <div className="flex-1 min-h-0 overflow-hidden">
             {activeTab === "original" ? (
               <AceEditor
+                ref={originalEditorRef}
                 mode="text"
                 value={originalText}
                 onChange={handleOriginalChange}
@@ -252,6 +259,7 @@ export default function HomePage() {
               />
             ) : (
               <AceEditor
+                ref={modifiedEditorRef}
                 mode="text"
                 value={modifiedText}
                 onChange={handleModifiedChange}
@@ -266,31 +274,35 @@ export default function HomePage() {
       );
     }
 
-    // For desktop, use the side-by-side view
+    // For desktop, use the built-in diff editor
     return (
-      <div className="flex h-full w-full" style={{ height: "100%" }}>
-        <div className="w-1/2 h-full border-r">
-          <AceEditor
-            mode="text"
-            value={originalText}
-            onChange={handleOriginalChange}
-            name="original-editor"
-            placeholder="Type or paste your text here to proofread..."
-            {...commonProps}
-          />
-        </div>
-        <div className="w-1/2 h-full">
-          <AceEditor
-            mode="text"
-            value={modifiedText}
-            onChange={handleModifiedChange}
-            name="modified-editor"
-            placeholder="Proofread text will appear here..."
-            readOnly={isLoading}
-            {...commonProps}
-          />
-        </div>
-      </div>
+      <DiffEditor
+        mode="text"
+        value={[originalText || "", modifiedText || ""]}
+        name="diff-editor"
+        theme={getEditorTheme()}
+        height="100%"
+        width="100%"
+        fontSize={14}
+        showPrintMargin={false}
+        showGutter={true}
+        setOptions={{
+          useWorker: false,
+          tabSize: 2,
+          wrap: true,
+        }}
+        onChange={(newValue) => {
+          // The diff editor values array: [0] is original, [1] is modified
+          if (newValue && newValue[0] !== originalText) {
+            handleOriginalChange(newValue[0]);
+          }
+          if (newValue && newValue[1] !== modifiedText && !isLoading) {
+            handleModifiedChange(newValue[1]);
+          }
+        }}
+        // @ts-ignore - the DiffEditor component accepts boolean[] for readOnly but TypeScript doesn't recognize it
+        readOnly={isLoading ? [false, true] : false}
+      />
     );
   };
 
