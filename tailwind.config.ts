@@ -54,7 +54,7 @@ const config: Config = {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
-      },
+      }
     },
   },
   darkMode: ["class", "class"],

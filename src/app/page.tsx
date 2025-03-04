@@ -21,17 +21,6 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import CodeMirror from "@uiw/react-codemirror";
-import CodeMirrorMerge from "react-codemirror-merge";
-import { EditorView, keymap } from "@codemirror/view";
-import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  indentWithTab,
-} from "@codemirror/commands";
-import { EditorState } from "@codemirror/state";
 
 import {
   EditIcon,
@@ -53,12 +42,14 @@ import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
 import Spinner from "@/components/Spinner";
+import { diffChars } from "diff";
+import TiptapEditor from "@/components/TiptapEditor";
 
 // https://github.com/astoilkov/use-local-storage-state/issues/56
 function useIsServerRender() {
   const isServerRender = useSyncExternalStore(
     () => {
-      return () => {};
+      return () => { };
     },
     () => false,
     () => true
@@ -186,60 +177,41 @@ export default function HomePage() {
 
   const { resolvedTheme } = useTheme();
 
-  // Get theme based on the current app theme
-  const getEditorTheme = () => {
-    return resolvedTheme === "dark" ? githubDark : githubLight;
-  };
-
   // Toggle mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const [activeTab, setActiveTab] = useLocalStorageState<
+    "original" | "modified"
+  >("activeTab", {
+    defaultValue: "original",
+  });
+
+  const changes = diffChars(originalText, modifiedText);
+
   // Render the appropriate editor based on device type
   const renderDiffEditor = () => {
-    const Original = CodeMirrorMerge.Original;
-    const Modified = CodeMirrorMerge.Modified;
-
-    // Common setup for all editors
-    const commonSetup = {
-      lineNumbers: true,
-      highlightActiveLine: true,
-      highlightActiveLineGutter: true,
-      foldGutter: true,
-    };
-
-    // Common extensions for all editors
-    const commonExtensions = [
-      EditorView.lineWrapping,
-      getEditorTheme(),
-      history(),
-      keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-      EditorState.allowMultipleSelections.of(true),
-    ];
-
     // For mobile, use a single-column layout with tabs
     if (isMobile) {
       return (
         <div className="flex flex-col h-full">
           <div className="flex border-b">
             <button
-              className={`flex-1 p-3 text-center font-medium transition-colors ${
-                activeTab === "original"
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted-foreground"
-              }`}
+              className={`flex-1 p-3 text-center font-medium transition-colors ${activeTab === "original"
+                ? "border-b-2 border-primary text-primary"
+                : "text-muted-foreground"
+                }`}
               onClick={() => setActiveTab("original")}
               aria-label="Switch to original text"
             >
               Original
             </button>
             <button
-              className={`flex-1 p-3 text-center font-medium transition-colors ${
-                activeTab === "modified"
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted-foreground"
-              }`}
+              className={`flex-1 p-3 text-center font-medium transition-colors ${activeTab === "modified"
+                ? "border-b-2 border-primary text-primary"
+                : "text-muted-foreground"
+                }`}
               onClick={() => setActiveTab("modified")}
               aria-label="Switch to modified text"
             >
@@ -248,72 +220,52 @@ export default function HomePage() {
           </div>
           <div className="flex-1 min-h-0 overflow-hidden">
             {activeTab === "original" ? (
-              <CodeMirror
-                value={originalText}
+              <TiptapEditor
+                content={originalText}
                 onChange={handleOriginalChange}
-                height="100%"
-                width="100%"
-                basicSetup={commonSetup}
-                extensions={commonExtensions}
-                className="h-full w-full"
                 placeholder="Type or paste your text here to proofread..."
-                style={{ height: "100%" }}
+                changes={changes}
                 autoFocus={activeTab === "original"}
               />
             ) : (
-              <CodeMirror
-                value={modifiedText}
+              <TiptapEditor
+                content={modifiedText}
                 onChange={handleModifiedChange}
-                height="100%"
-                width="100%"
-                basicSetup={commonSetup}
-                extensions={commonExtensions}
-                className="h-full w-full"
                 readOnly={isLoading}
                 placeholder="Proofread text will appear here..."
-                style={{ height: "100%" }}
+                changes={changes}
                 autoFocus={activeTab === "modified"}
               />
             )}
           </div>
         </div>
       );
+    } else {
+      return (
+        <div className="flex h-full w-full">
+          <div className="w-1/2 border-r dark:border-gray-700">
+            <TiptapEditor
+              content={originalText}
+              onChange={handleOriginalChange}
+              placeholder="Type or paste your text here to proofread..."
+              changes={changes}
+              autoFocus={true}
+            />
+          </div>
+          <div className="w-1/2">
+            <TiptapEditor
+              content={modifiedText}
+              onChange={handleModifiedChange}
+              readOnly={isLoading}
+              placeholder="Proofread text will appear here..."
+              changes={changes}
+              autoFocus={true}
+            />
+          </div>
+        </div>
+      );
     }
-
-    // For desktop, use the side-by-side diff view
-    return (
-      <CodeMirrorMerge
-        className="h-full w-full"
-        style={{ height: "100%" }}
-        revertControls="b-to-a"
-        collapseUnchanged={{
-          margin: 3, // Keep 3 unchanged lines around changes for context
-        }}
-      >
-        <Original
-          value={originalText}
-          onChange={handleOriginalChange}
-          basicSetup={commonSetup}
-          extensions={commonExtensions}
-          placeholder="Type or paste your text here to proofread..."
-        />
-        <Modified
-          value={modifiedText}
-          onChange={handleModifiedChange}
-          basicSetup={commonSetup}
-          extensions={commonExtensions}
-          readOnly={isLoading}
-          placeholder="Proofread text will appear here..."
-        />
-      </CodeMirrorMerge>
-    );
   };
-
-  const [activeTab, setActiveTab] = useLocalStorageState<
-    "original" | "modified"
-  >("activeTab", {
-    defaultValue: "original",
-  });
 
   return (
     <div className="h-screen w-full flex flex-col p-2 sm:p-4">
