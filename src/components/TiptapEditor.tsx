@@ -24,6 +24,8 @@ const TiptapEditor = ({
   changes = [],
   autoFocus = false,
 }: TiptapEditorProps) => {
+  // plain text to html
+  const html = content.replace(/\n/g, '<br>');
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -31,7 +33,7 @@ const TiptapEditor = ({
         placeholder: placeholder,
       }),
     ],
-    content: content,
+    content: html,
     editable: !readOnly,
     autofocus: autoFocus,
     editorProps: {
@@ -43,6 +45,12 @@ const TiptapEditor = ({
       onChange?.(editor.getText());
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(html);
+    }
+  }, [content, editor]);
 
   return (
     <div className="relative h-full w-full rounded-md border overflow-hidden group">
