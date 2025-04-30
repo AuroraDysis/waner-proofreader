@@ -12,6 +12,47 @@ Here is a [demo](https://waner.auroradysis.com). You need to configure your own 
 
 # Installation
 
+## Docker Installation
+
+To run Waner Proofreader using Docker, use the following docker-compose file:
+
+```yaml
+services:
+  waner-proofreader:
+    image: ghcr.io/auroradysis/waner-proofreader:latest
+    container_name: waner-proofreader
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config.toml:/app/config.toml
+    environment:
+      - CONFIG=/app/config.toml or <base64 encoded TOML>
+```
+
+where `<base64 encoded TOML>` is the base64 encoded TOML configuration file or `<path to TOML file>` is the path to the TOML configuration file. The TOML file `config.toml` should contain the following information:
+
+```toml
+models = ["openai/gpt-4o", "google/gemini-2.5-pro-preview-03-25", "x-ai/grok-3-beta", "qwen/qwen3-235b-a22b", "openai/gpt-4.1", "google/gemini-2.5-flash-preview", "qwen/qwen-max", "openai/chatgpt-4o-latest"]
+
+[[users]]
+name = "name"
+key = "password"
+openai_base_url = "base url of API endpoint, for example, https://openrouter.ai/api/v1 or https://api.openai.com/v1"
+openai_api_key = "your api key of the endpoint"
+
+# other users
+[[users]]
+...
+```
+
+If you want to use providers other than OpenRouter, you may need to modify `models` accordingly. Replace
+`<openai_base_url>` and `<your_api_key>` with your actual API key and base URL, which should be compatible with the OpenAI API. The `models` field should contain a list of models you want to use, and you can add or remove models as needed.
+
+You can also add multiple users by adding more `[[users]]` sections.
+
+## Local Installation
+
 To run Waner Proofreader locally, ensure that you have Node.js installed on your machine. Follow these steps to set up the project:
 
 1. Clone the repository:
@@ -29,36 +70,15 @@ To run Waner Proofreader locally, ensure that you have Node.js installed on your
 3. Install the required dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
-4. Create a `.env` file in the root directory and add the following environment variables:
-
-   ```
-   CONFIG=<base64 encoded TOML>
-   NEXT_PUBLIC_OPENAI_MODEL=anthropic/claude-3.5-sonnet,anthropic/claude-3-opus,openai/chatgpt-4o-latest,openai/gpt-4,google/gemini-2.0-flash-thinking-exp:free
-   ```
-
-   where `<base64 encoded TOML>` is the base64 encoded TOML configuration file. The TOML file should contain the following information:
-
-   ```toml
-   [[users]]
-   name = "name"
-   key = "password"
-   openai_base_url = "base url of API endpoint, for example, https://openrouter.ai/api/v1 or https://api.openai.com/v1"
-   openai_api_key = "your api key of the endpoint"
-
-   [[users]]
-   name = "another name"
-   ...
-   ```
-
-   If you want to use providers other than OpenRouter, you may need to modify `NEXT_PUBLIC_OPENAI_MODEL` accordingly. Alternatively, you can set the model in the UI. Replace `<your_api_key>` with your API key for security. You can pass multiple keys separated by commas.
+4. Create a `.env` file in the root directory and add `CONFIG` as previously mentioned.
 
 5. Start the development server:
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 6. Open your web browser and visit `http://localhost:3000` to access Waner Proofreader.

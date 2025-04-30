@@ -5,6 +5,19 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig.json'
+      - 'next.config.ts'
+      - 'postcss.config.mjs'
+      - 'tailwind.config.ts'
+      - 'eslint.config.mjs'
+      - 'src/**'
+      - 'public/**'
 
 jobs:
   docker:
