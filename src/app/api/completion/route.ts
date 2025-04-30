@@ -32,7 +32,7 @@ interface RequestPayload {
   apiKey: string;
 }
 
-const apiKeys = config.users.map((user) => user.key) || [];
+const apiKeys = Array.isArray(config?.users) ? config.users.map((user) => user.key) : [];
 
 export async function POST(req: NextRequest) {
   const {
