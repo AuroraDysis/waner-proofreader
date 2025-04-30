@@ -28,7 +28,7 @@ try {
   // Attempt to read CONFIG as a file path
   config_content = fs.readFileSync(config_input, "utf-8");
   console.log(`Loaded config from path: ${config_input}`);
-} catch (error) {
+} catch (_error) {
   // If reading fails, assume it's a base64 string
   console.log(
     "CONFIG is not a valid path or file is unreadable, attempting base64 decode."
