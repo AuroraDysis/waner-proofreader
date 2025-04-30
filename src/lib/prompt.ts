@@ -1,6 +1,3 @@
-export const models =
-  process.env.NEXT_PUBLIC_OPENAI_MODEL?.split(",") ?? ([] as string[]);
-
 export const contexts = [
   {
     key: "academic",

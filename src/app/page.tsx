@@ -31,7 +31,6 @@ import {
 } from "@/components/Icon";
 
 import {
-  models,
   contexts,
   instructions,
   generate_system_prompt,
@@ -40,6 +39,10 @@ import {
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
+
+interface ModelApiResponse {
+  models: string[];
+}
 
 // https://github.com/astoilkov/use-local-storage-state/issues/56
 function useIsServerRender() {
@@ -59,8 +62,12 @@ export default function HomePage() {
 
   const settingDisclosure = useDisclosure();
 
-  const [model, setModel] = useLocalStorageState("model", {
-    defaultValue: models[0],
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(true);
+  const [modelsError, setModelsError] = useState<string | null>(null);
+
+  const [model, setModel] = useLocalStorageState<string | undefined>("model", {
+    defaultValue: undefined, // Initialize later after fetching
   });
   const [context, setContext] = useLocalStorageState("context", {
     defaultValue: contexts[0].key,
@@ -94,6 +101,40 @@ export default function HomePage() {
   const [leftHeaderWidth, setLeftHeaderWidth] = useState<number | null>(null);
 
   const isServerRender = useIsServerRender();
+
+  // Fetch models from API
+  useEffect(() => {
+    const fetchModels = async () => {
+      setModelsLoading(true);
+      setModelsError(null);
+      try {
+        const response = await fetch("/api/models");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: ModelApiResponse = await response.json();
+        setAvailableModels(data.models || []);
+        // Set default model if none is selected or the selected one is invalid
+        setModel((currentModel) => {
+          if (!currentModel || !data.models?.includes(currentModel)) {
+            return data.models?.[0];
+          }
+          return currentModel;
+        });
+      } catch (error) {
+        console.error("Failed to fetch models:", error);
+        setModelsError(
+          error instanceof Error ? error.message : "An unknown error occurred"
+        );
+        setAvailableModels([]); // Clear models on error
+        setModel(undefined); // Clear selected model on error
+      } finally {
+        setModelsLoading(false);
+      }
+    };
+
+    fetchModels();
+  }, [setModel]); // Fetch only once on mount
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -170,11 +211,13 @@ export default function HomePage() {
   }, [completion]);
 
   const handleProofread = async () => {
-    if (editorRef.current) {
+    if (editorRef.current && availableModels.length > 0) {
       let currentModel = model;
-      if (!models.includes(model)) {
-        setModel(models[0]);
-        currentModel = models[0];
+      // Ensure the selected model is valid, default to the first available if not
+      if (!currentModel || !availableModels.includes(currentModel)) {
+        const defaultModel = availableModels[0];
+        setModel(defaultModel);
+        currentModel = defaultModel;
       }
       try {
         await complete(originalText || "", {
@@ -211,14 +254,18 @@ export default function HomePage() {
                 <Autocomplete
                   allowsCustomValue
                   label="Select a model"
-                  defaultItems={models.map((model) => ({ key: model }))}
-                  inputValue={model}
+                  defaultItems={availableModels.map((m) => ({ key: m, label: m }))}
+                  inputValue={model ?? ""} // Handle initial undefined state
                   onInputChange={(value) => setModel(value)}
+                  selectedKey={model}
+                  onSelectionChange={(key) => setModel(key as string)}
+                  isLoading={modelsLoading}
+                  errorMessage={modelsError}
                   className="w-full sm:max-w-sm"
                 >
-                  {(model) => (
-                    <AutocompleteItem key={model.key}>
-                      {model.key}
+                  {(item) => (
+                    <AutocompleteItem key={item.key}>
+                      {item.label}
                     </AutocompleteItem>
                   )}
                 </Autocomplete>
