@@ -4,9 +4,6 @@ import { apiKeys, models, users } from "@/lib/config";
 import { generate_system_prompt } from "@/lib/prompt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Allow streaming responses up to 5 minutes
-export const maxDuration = 300;
-
 interface RequestPayload {
   model: string;
   context: string;

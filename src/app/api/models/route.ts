@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { models } from "../../lib/config";
+import { models } from "@/lib/config";
 
 export async function GET() {
   try {
