@@ -2,7 +2,8 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { apiKeys, models, users } from "@/lib/config";
 import { generate_system_prompt } from "@/lib/prompt";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 interface RequestPayload {
   model: string;
@@ -27,7 +28,12 @@ export async function POST(req: NextRequest) {
   let openaiApiKey = "";
 
   if (apiKeys.includes(apiKey)) {
-    const user = users.find((user) => user.key === apiKey)!;
+    const user = users.find((user) => user.key === apiKey);
+
+    if (!user) {
+      return new NextResponse("Invalid API key", { status: 403 });
+    }
+
     openaiBaseUrl = user.openai_base_url;
     openaiApiKey = user.openai_api_key;
 
