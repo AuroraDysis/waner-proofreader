@@ -243,13 +243,14 @@ export default function HomePage() {
   const monaco = useMonaco();
   useEffect(() => {
     if (editorMounted && monaco) {
-      monaco.editor.setTheme(theme === "dark" ? "vs-dark" : "vs");
       monaco.languages.register({ id: "latex" });
       createHighlighter({
         themes: ["github-dark", "github-light"],
         langs: ["latex"],
       }).then((highlighter) => {
         shikiToMonaco(highlighter, monaco);
+        highlighter.setTheme(theme === "dark" ? "github-dark" : "github-light");
+        monaco.editor.setTheme(theme === "dark" ? "github-dark" : "github-light");
       });
     }
   }, [monaco, theme, editorMounted]);
@@ -376,7 +377,7 @@ export default function HomePage() {
                 className="h-full"
                 language="latex"
                 options={{ originalEditable: true, wordWrap: "on" }}
-                theme={theme === "dark" ? "vs-dark" : "vs"}
+                theme={theme === "dark" ? "github-dark" : "github-light"}
                 onMount={handleEditorDidMount}
               />
             </div>
