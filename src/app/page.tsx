@@ -40,6 +40,9 @@ import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
 
+import { createHighlighter } from "shiki";
+import { shikiToMonaco } from "@shikijs/monaco";
+
 interface ModelApiResponse {
   models: string[];
 }
@@ -241,6 +244,13 @@ export default function HomePage() {
   useEffect(() => {
     if (editorMounted && monaco) {
       monaco.editor.setTheme(theme === "dark" ? "vs-dark" : "vs");
+      monaco.languages.register({ id: "latex" });
+      createHighlighter({
+        themes: ["github-dark", "github-light"],
+        langs: ["latex"],
+      }).then((highlighter) => {
+        shikiToMonaco(highlighter, monaco);
+      });
     }
   }, [monaco, theme, editorMounted]);
 
@@ -364,7 +374,7 @@ export default function HomePage() {
             <div className="flex-grow">
               <DiffEditor
                 className="h-full"
-                language="plaintext"
+                language="latex"
                 options={{ originalEditable: true, wordWrap: "on" }}
                 theme={theme === "dark" ? "vs-dark" : "vs"}
                 onMount={handleEditorDidMount}

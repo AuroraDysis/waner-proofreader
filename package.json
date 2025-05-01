@@ -13,6 +13,7 @@
     "@ai-sdk/openai": "^1.3.21",
     "@heroui/react": "2.7.8",
     "@monaco-editor/react": "4.7.0-rc.0",
+    "@shikijs/monaco": "^3.3.0",
     "ai": "^4.3.12",
     "framer-motion": "^12.9.2",
     "lodash": "^4.17.21",
@@ -21,14 +22,15 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^5.0.0",
+    "shiki": "^3.3.0",
     "smol-toml": "^1.3.4",
     "use-local-storage-state": "^19.5.0"
   },
   "peerDependencies": {
     "@ai-sdk/react": "^1.0.7",
     "@tanstack/react-virtual": "^3.11.2",
-    "swr": "^2.3.0",
-    "@typescript-eslint/parser": "^8.31.1"
+    "@typescript-eslint/parser": "^8.31.1",
+    "swr": "^2.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
