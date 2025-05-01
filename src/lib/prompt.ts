@@ -47,7 +47,8 @@ Linguistic precision:
   {
     key: "oral",
     label: "Oral",
-    prompt: `You are an experienced public speaker, able to articulate complex ideas clearly and persuasively in spoken language.`,
+    prompt:
+      "You are an experienced public speaker, able to articulate complex ideas clearly and persuasively in spoken language.",
     guidelines: `- Treating the text as if it were to be spoken aloud.
 - Using language that would sound natural when spoken aloud.
 - Avoiding complex sentence structures.`,
