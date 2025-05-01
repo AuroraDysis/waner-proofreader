@@ -7,8 +7,8 @@ export const contexts = [
 Please carefully review the text for the following:
 - Grammar: Identify and correct any grammatical errors.
 - Spelling: Spot and correct any spelling mistakes or typos.
-- Formatting: Ensure consistent use of formatting elements such as italics, bold text, and capitalization within the document. Also, ensure a white space \`\\,\` before every ending comma or full stop in LaTeX block equations.
-- Punctuation: Ensure proper use of punctuation throughout the text.
+- Formatting: Ensure consistent use of formatting elements such as italics, bold text, and capitalization within the document.
+- Punctuation: Ensure proper use of punctuation throughout the text. Pay close attention to punctuation within and around mathematical expressions (inline and displayed equations). Apply standard grammatical rules; for instance, use commas or periods after displayed equations if the sentence structure requires them. Adhere strictly to the principle: "A mathematical text is, before everything else, a text." Punctuate mathematical discourse as you would standard prose, ensuring readability and grammatical correctness without introducing mathematical ambiguity.
 - Consistency: Check for consistent use of British or American English.
 - Clarity: Improve the text's clarity while maintaining the author's voice. Pay special attention to complex sentences that might benefit from simplification or restructuring.
 - Flow: Identify and improve any areas where transitions between sentences or paragraphs could be enhanced for better readability.`,
