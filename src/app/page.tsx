@@ -377,7 +377,7 @@ export default function HomePage() {
               <DiffEditor
                 className="h-full"
                 language="latex"
-                options={{ originalEditable: true, wordWrap: "on" }}
+                options={{ originalEditable: true, useInlineViewWhenSpaceIsLimited: false, wordWrap: "on" }}
                 theme={theme === "dark" ? "github-dark" : "github-light"}
                 onMount={handleEditorDidMount}
               />
