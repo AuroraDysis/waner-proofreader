@@ -190,6 +190,7 @@ export default function HomePage() {
       .getModifiedEditor()
       .onDidChangeModelContent(handleModifiedContentChange);
 
+    setLeftHeaderWidth(editor.getOriginalEditor().getLayoutInfo().width);
     editor.getOriginalEditor().onDidLayoutChange((layout) => {
       setLeftHeaderWidth(layout.width);
     });
