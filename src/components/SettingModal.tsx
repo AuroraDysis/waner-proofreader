@@ -55,18 +55,6 @@ export default function SettingModal({
                 <Input
                   autoFocus
                   endContent={
-                    <LinkIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
-                  }
-                  label="OpenAI Endpoint"
-                  description="Must start with http(s)://, empty to use server-side configuration"
-                  placeholder="Enter your endpoint"
-                  variant="bordered"
-                  value={endpoint}
-                  onValueChange={setEndpoint}
-                />
-                <Input
-                  autoFocus
-                  endContent={
                     <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
                   }
                   label="OpenAI API Key"
@@ -75,6 +63,18 @@ export default function SettingModal({
                   variant="bordered"
                   value={apiKey}
                   onValueChange={setApiKey}
+                />
+                <Input
+                  autoFocus
+                  endContent={
+                    <LinkIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
+                  }
+                  label="OpenAI Endpoint (optional)"
+                  description="Must start with http(s)://, empty to use server-side configuration"
+                  placeholder="Enter your endpoint"
+                  variant="bordered"
+                  value={endpoint}
+                  onValueChange={setEndpoint}
                 />
               </ModalBody>
               <ModalFooter>
