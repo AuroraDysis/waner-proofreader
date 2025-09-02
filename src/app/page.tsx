@@ -122,6 +122,7 @@ export default function HomePage() {
                     isProofreading={isLoading}
                     onStop={stop}
                     onOpenSettings={settingDisclosure.onOpen}
+                    isMobile={isMobile}
                   />
 
                   <Card className="flex-1 flex flex-col min-h-0">
@@ -140,7 +141,7 @@ export default function HomePage() {
                             <TextEditor
                               value={originalText}
                               onChange={setOriginalText}
-                              label="Original Text"
+                              label={isMobile ? "" : "Original Text"}
                               variant="original"
                               onPaste={pasteFromClipboard}
                               onCopy={copyOriginalToClipboard}
@@ -152,7 +153,7 @@ export default function HomePage() {
                             <TextEditor
                               value={modifiedText}
                               onChange={setModifiedText}
-                              label="Modified Text"
+                              label={isMobile ? "" : "Modified Text"}
                               variant="modified"
                               isLoading={isLoading}
                               onPaste={pasteIntoModified}
@@ -177,7 +178,7 @@ export default function HomePage() {
                       size="lg"
                       onPress={proofread}
                       startContent={<EditIcon className="h-7 w-7" />}
-                      className="w-full sticky bottom-4 shadow-lg"
+                      className="w-full sticky bottom-4 shadow-lg mt-3"
                     >
                       Proofread
                     </Button>

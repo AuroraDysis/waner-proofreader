@@ -35,6 +35,7 @@ interface ControlPanelProps {
   onStop: () => void;
   className?: string;
   onOpenSettings: () => void;
+  isMobile?: boolean;
 }
 
 export default function ControlPanel({
@@ -52,6 +53,7 @@ export default function ControlPanel({
   onStop,
   className = "",
   onOpenSettings,
+  isMobile,
 }: ControlPanelProps) {
   const systemPrompt = useMemo(
     () => generate_system_prompt(context, instruction),
@@ -61,48 +63,48 @@ export default function ControlPanel({
     <Card className={className}>
       <CardBody className="gap-4 flex flex-col md:flex-row md:flex-wrap md:items-end">
         <div className="flex items-center gap-2 md:mr-auto">
-            <Popover placement="bottom">
-              <PopoverTrigger>
-                <IconButton
-                  withTooltip={false}
-                  tooltip="System Prompt"
-                  icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
-                  isIconOnly
-                  size="md"
-                />
-              </PopoverTrigger>
-              <PopoverContent>
-                <div className="w-80 md:w-96 p-2">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-semibold">System Prompt</h3>
-                  </div>
-                  <Textarea
-                    value={systemPrompt}
-                    minRows={10}
-                    maxRows={15}
-                    isReadOnly
-                    variant="bordered"
-                    size="lg"
-                  />
+          <Popover placement="bottom">
+            <PopoverTrigger>
+              <IconButton
+                withTooltip={false}
+                tooltip="System Prompt"
+                icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                isIconOnly
+                size="md"
+              />
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="w-80 md:w-96 p-2">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold">System Prompt</h3>
                 </div>
-              </PopoverContent>
-            </Popover>
-            <IconButton
-              tooltip="GitHub"
-              icon={<GithubIcon className="dark:invert h-6 w-6" />}
-              as={Link}
-              isIconOnly
-              size="md"
-              href="https://github.com/AuroraDysis/waner-proofreader"
-              isExternal
-            />
-            <ThemeSwitcher size="md" />
-            <IconButton
-              tooltip="Settings"
-              icon={<SettingIcon className="dark:invert h-6 w-6" />}
-              onPress={onOpenSettings}
-              size="md"
-            />
+                <Textarea
+                  value={systemPrompt}
+                  minRows={10}
+                  maxRows={15}
+                  isReadOnly
+                  variant="bordered"
+                  size="lg"
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+          <IconButton
+            tooltip="GitHub"
+            icon={<GithubIcon className="dark:invert h-6 w-6" />}
+            as={Link}
+            isIconOnly
+            size="md"
+            href="https://github.com/AuroraDysis/waner-proofreader"
+            isExternal
+          />
+          <ThemeSwitcher size="md" />
+          <IconButton
+            tooltip="Settings"
+            icon={<SettingIcon className="dark:invert h-6 w-6" />}
+            onPress={onOpenSettings}
+            size="md"
+          />
         </div>
 
         <Autocomplete
@@ -124,7 +126,7 @@ export default function ControlPanel({
             <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
           )}
         </Autocomplete>
-        
+
         <Select
           label="Context"
           selectedKeys={[context]}
@@ -140,7 +142,7 @@ export default function ControlPanel({
             <SelectItem key={ctx.key}>{ctx.label}</SelectItem>
           ))}
         </Select>
-        
+
         <Select
           label="Style"
           selectedKeys={[instruction]}
@@ -157,8 +159,8 @@ export default function ControlPanel({
             <SelectItem key={inst.key}>{inst.prompt}</SelectItem>
           ))}
         </Select>
-        
-        <Button
+
+        {!isMobile && <Button
           color={isProofreading ? "danger" : "primary"}
           variant="flat"
           onPress={isProofreading ? onStop : onProofread}
@@ -166,7 +168,7 @@ export default function ControlPanel({
           className="w-full md:w-auto"
         >
           {isProofreading ? "Stop" : "Proofread"}
-        </Button>
+        </Button>}
 
       </CardBody>
     </Card>
