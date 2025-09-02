@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack -p 8080",
     "build": "next build",
     "start": "next start -p 8080",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^1.0.13",
