@@ -132,9 +132,10 @@ export default function HomePage() {
                       selectedKey={activeTab}
                       onSelectionChange={(key) => setActiveTab(key as string)}
                       classNames={{
-                        "base": "max-h-10",
-                        // "tabList": "min-h-15",
-                        "panel": "flex flex-col flex-1 w-[calc(100%-1.5rem)] mx-3"
+                        "base": "flex-1 flex flex-col max-h-5",
+                        "tabList": "flex-shrink-0 flex-row",
+                        "tabContent": "flex-1 min-h-0 flex flex-col",
+                        "panel": "flex-1 min-h-0 p-3"
                       }}
                     >
                       <Tab key="original" title="Original">
