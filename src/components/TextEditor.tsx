@@ -33,7 +33,7 @@ export default function TextEditor({
   autoResize = true,
 }: TextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
+
   useEffect(() => {
     if (!textareaRef.current) return;
     if (autoResize) {
@@ -43,10 +43,10 @@ export default function TextEditor({
       textareaRef.current.style.height = "100%";
     }
   }, [value, autoResize]);
-  
+
   const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
   const charCount = value.length;
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,20 +64,20 @@ export default function TextEditor({
             <Chip size="sm" variant="flat">
               {charCount} chars
             </Chip>
-            {onPaste && (
-              <IconButton
-                tooltip="Paste"
-                icon={<PasteIcon className="h-5 w-5" />}
-                size="sm"
-                onPress={onPaste}
-              />
-            )}
             {onCopy && (
               <IconButton
                 tooltip="Copy"
                 icon={<CopyIcon className="h-5 w-5" />}
                 size="sm"
                 onPress={onCopy}
+              />
+            )}
+            {onPaste && (
+              <IconButton
+                tooltip="Paste"
+                icon={<PasteIcon className="h-5 w-5" />}
+                size="sm"
+                onPress={onPaste}
               />
             )}
           </div>
