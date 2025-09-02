@@ -101,9 +101,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background grid place-items-center">
-      <main className="px-4 py-6">
-        <Card className="min-h-[85vh] max-w-8xl h-[85vh]">
+    <div className="h-screen bg-background grid place-items-center">
+      <main className="h-[75svh] md:h-[83.3333vh] w-9/12">
+        <Card className="h-full">
           <CardBody className="h-full flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">
               {isMobile ? (
@@ -131,10 +131,6 @@ export default function HomePage() {
                         className="flex-1 flex flex-col min-h-0"
                         selectedKey={activeTab}
                         onSelectionChange={(key) => setActiveTab(key as string)}
-                        classNames={{
-                          tabList: "w-full",
-                          tab: "flex-1",
-                        }}
                       >
                         <Tab key="original" title="Original">
                           <div className="p-4">
