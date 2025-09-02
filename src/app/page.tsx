@@ -102,8 +102,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background grid place-items-center">
-      <main className="w-full px-4 py-6">
-        <Card className="w-full min-h-[85vh]">
+      <main className="px-4 py-6">
+        <Card className="min-h-[85vh] max-w-8xl h-[85vh]">
           <CardBody>
             <div className="flex-1 flex flex-col">
               {isMobile ? (
@@ -184,7 +184,7 @@ export default function HomePage() {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-12 gap-6 h-full">
+                <div className="grid grid-cols-12 gap-6 flex-1 flex-col">
                   <div className="col-span-3 flex items-center">
                     <ControlPanel
                       model={model}
