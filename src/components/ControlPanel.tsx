@@ -51,7 +51,7 @@ export default function ControlPanel({
   onProofread,
   isProofreading,
   onStop,
-  className = "",
+  className = "m-3",
   onOpenSettings,
   isMobile,
 }: ControlPanelProps) {

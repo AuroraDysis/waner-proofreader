@@ -125,10 +125,10 @@ export default function HomePage() {
                     isMobile={isMobile}
                   />
 
-                  <Card className="flex-1 flex flex-col min-h-0">
+                  <Card className="flex-1 flex flex-col min-h-0 m-3">
                     <CardBody className="p-0 flex-1 flex flex-col min-h-0">
                       <Tabs
-                        className="flex-1 flex flex-col min-h-0"
+                        className="flex-1 flex flex-col min-h-0 m-3"
                         selectedKey={activeTab}
                         onSelectionChange={(key) => setActiveTab(key as string)}
                       >
@@ -174,7 +174,7 @@ export default function HomePage() {
                       size="lg"
                       onPress={proofread}
                       startContent={<EditIcon className="h-7 w-7" />}
-                      className="w-full sticky bottom-4 shadow-lg mt-3"
+                      className="sticky bottom-4 shadow-lg m-3"
                     >
                       Proofread
                     </Button>
