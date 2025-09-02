@@ -44,6 +44,7 @@ export function useProofreader() {
   });
 
   const { complete, isLoading, stop } = useCompletion({
+    streamProtocol: "text",
     api: "/api/completion",
     onError: (error) => {
       setProofreadError(error.message);
