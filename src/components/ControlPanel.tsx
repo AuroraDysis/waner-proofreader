@@ -59,20 +59,17 @@ export default function ControlPanel({
   );
   return (
     <Card className={className}>
-      <CardBody className="gap-4">
-        <div className="flex flex-col items-center gap-2">
-          <h2 className="text-xl font-semibold text-center">Waner Proofreader</h2>
-          <div className="flex items-center gap-2">
+      <CardBody className="gap-4 flex flex-col md:flex-row md:flex-wrap md:items-end">
+        <div className="flex items-center gap-2 md:mr-auto">
             <Popover placement="bottom">
               <PopoverTrigger>
-                <span>
-                  <IconButton
-                    tooltip="System Prompt"
-                    icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
-                    isIconOnly
-                    size="md"
-                  />
-                </span>
+                <IconButton
+                  withTooltip={false}
+                  tooltip="System Prompt"
+                  icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                  isIconOnly
+                  size="md"
+                />
               </PopoverTrigger>
               <PopoverContent>
                 <div className="w-80 md:w-96 p-2">
@@ -106,7 +103,6 @@ export default function ControlPanel({
               onPress={onOpenSettings}
               size="md"
             />
-          </div>
         </div>
 
         <Autocomplete
@@ -122,6 +118,7 @@ export default function ControlPanel({
           errorMessage={modelsError}
           size="sm"
           variant="bordered"
+          className="w-full md:w-72"
         >
           {(item) => (
             <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
@@ -137,6 +134,7 @@ export default function ControlPanel({
           }}
           size="sm"
           variant="bordered"
+          className="w-full md:w-56"
         >
           {contexts.map((ctx) => (
             <SelectItem key={ctx.key}>{ctx.label}</SelectItem>
@@ -153,6 +151,7 @@ export default function ControlPanel({
           size="sm"
           variant="bordered"
           isDisabled={context === "academic"}
+          className="w-full md:w-56"
         >
           {instructions.map((inst) => (
             <SelectItem key={inst.key}>{inst.prompt}</SelectItem>
@@ -164,7 +163,7 @@ export default function ControlPanel({
           variant="flat"
           onPress={isProofreading ? onStop : onProofread}
           startContent={!isProofreading && <EditIcon className="h-4 w-4" />}
-          className="w-full"
+          className="w-full md:w-auto"
         >
           {isProofreading ? "Stop" : "Proofread"}
         </Button>

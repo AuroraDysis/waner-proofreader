@@ -184,26 +184,24 @@ export default function HomePage() {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-12 gap-6 h-full">
-                  <div className="col-span-3 h-full flex items-center">
-                    <ControlPanel
-                      model={model}
-                      setModel={setModel}
-                      context={context}
-                      setContext={setContext}
-                      instruction={instruction}
-                      setInstruction={setInstruction}
-                      availableModels={availableModels}
-                      modelsLoading={modelsLoading}
-                      modelsError={modelsError}
-                      onProofread={proofread}
-                      isProofreading={isLoading}
-                      onStop={stop}
-                      onOpenSettings={settingDisclosure.onOpen}
-                    />
-                  </div>
+                <div className="h-full min-h-0 flex flex-col gap-4">
+                  <ControlPanel
+                    model={model}
+                    setModel={setModel}
+                    context={context}
+                    setContext={setContext}
+                    instruction={instruction}
+                    setInstruction={setInstruction}
+                    availableModels={availableModels}
+                    modelsLoading={modelsLoading}
+                    modelsError={modelsError}
+                    onProofread={proofread}
+                    isProofreading={isLoading}
+                    onStop={stop}
+                    onOpenSettings={settingDisclosure.onOpen}
+                  />
 
-                  <div className="col-span-9 h-full min-h-0 flex flex-col">
+                  <div className="flex-1 min-h-0 flex flex-col">
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col gap-4">
                       <div className="grid grid-cols-2 gap-4 h-1/2 min-h-0">
                         <TextEditor
