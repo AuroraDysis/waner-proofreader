@@ -80,13 +80,13 @@ export default function TextEditor({
               placeholder={placeholder}
               isReadOnly={isReadOnly || isLoading}
               variant="bordered"
-              className="h-full"
               classNames={{
-                base: "flex-1 min-h-0",
-                inputWrapper: "h-full",
+                base: "h-full",
+                inputWrapper: "!h-full",
                 input: "text-base h-full min-h-0 resize-none"
               }}
               description={isLoading ? "AI is processing..." : undefined}
+              disableAutosize
             />
           </div>
         </CardBody>
