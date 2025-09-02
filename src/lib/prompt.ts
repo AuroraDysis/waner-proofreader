@@ -1,4 +1,6 @@
-export const contexts = [
+import type { Context, Instruction } from "@/types";
+
+export const contexts: Context[] = [
   {
     key: "academic",
     label: "Academic",
@@ -66,7 +68,7 @@ Linguistic precision:
   },
 ];
 
-export const instructions = [
+export const instructions: Instruction[] = [
   {
     key: "basicProofread",
     prompt: "proofread the text",
