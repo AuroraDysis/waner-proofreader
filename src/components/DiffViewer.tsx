@@ -39,7 +39,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
   
   return (
     <Card className={`h-full ${className}`}>
-      <CardBody className="h-full flex flex-col">
+      <CardBody className="h-full flex flex-col min-h-0">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Diff View</h3>
           <div className="flex gap-2">

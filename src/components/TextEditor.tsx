@@ -95,7 +95,7 @@ export default function TextEditor({
               variant="bordered"
               className="h-full"
               classNames={{
-                input: "text-base h-full",
+                input: "text-base h-full overflow-auto resize-none",
                 inputWrapper: `${isLoading ? "opacity-60" : ""} h-full`
               }}
               description={isLoading ? "AI is processing..." : undefined}
