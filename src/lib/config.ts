@@ -1,17 +1,6 @@
 import { parse } from "smol-toml";
 import fs from "fs";
-
-export interface Config {
-  models: string[];
-  users: User[];
-}
-
-interface User {
-  name: string;
-  key: string;
-  openai_base_url: string;
-  openai_api_key: string;
-}
+import type { Config } from "@/types";
 
 // --- Config Loading ---
 let config_content: string;

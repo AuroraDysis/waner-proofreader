@@ -1,18 +1,9 @@
-import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { streamText } from "ai";
 import { apiKeys, models, users } from "@/lib/config";
 import { generate_system_prompt } from "@/lib/prompt";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
-interface RequestPayload {
-  model: string;
-  context: string;
-  instruction: string;
-  prompt: string;
-  endpoint: string;
-  apiKey: string;
-}
 
 export async function POST(req: NextRequest) {
   const {
@@ -22,7 +13,7 @@ export async function POST(req: NextRequest) {
     prompt,
     endpoint,
     apiKey,
-  }: RequestPayload = await req.json();
+  } = await req.json();
 
   let openaiBaseUrl = "";
   let openaiApiKey = "";
@@ -56,16 +47,17 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Invalid API key or endpoint", { status: 403 });
   }
 
-  const openai = createOpenAI({
+  const provider = createOpenAICompatible({
+    name: openaiBaseUrl,
     baseURL: openaiBaseUrl,
     apiKey: openaiApiKey,
   });
 
-  const result = streamText({
-    model: openai(model),
+  const response = streamText({
+    model: provider(model),
     system: generate_system_prompt(context, instruction),
     prompt,
   });
 
-  return result.toDataStreamResponse();
+  return response.toTextStreamResponse();
 }

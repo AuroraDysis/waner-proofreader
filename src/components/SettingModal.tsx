@@ -1,23 +1,12 @@
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-  Input,
-} from "@heroui/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@heroui/react";
 import { LinkIcon, LockIcon } from "@/components/Icon";
 import useLocalStorageState from "use-local-storage-state";
 
 export interface SettingModalProps {
-  proofreadError: string | null;
   disclosure: ReturnType<typeof useDisclosure>;
 }
 
 export default function SettingModal({
-  proofreadError,
   disclosure,
 }: SettingModalProps) {
   const { isOpen, onOpenChange } = disclosure;
@@ -45,13 +34,6 @@ export default function SettingModal({
                 Settings
               </ModalHeader>
               <ModalBody>
-                {
-                  proofreadError && (
-                    <span className="text-sm text-red-600 dark:text-red-400">
-                      Error: {proofreadError}
-                    </span>
-                  )
-                }
                 <Input
                   autoFocus
                   endContent={

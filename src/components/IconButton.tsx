@@ -1,19 +1,35 @@
 import { ReactNode } from "react";
 import { Button, ButtonProps, Tooltip } from "@heroui/react";
+import { cn } from "@heroui/react";
 
 interface IconButtonProps extends ButtonProps {
   tooltip?: ReactNode;
   icon: ReactNode;
   isExternal?: boolean;
+  withTooltip?: boolean;
 }
 
 export default function IconButton(props: IconButtonProps) {
-  const { tooltip, icon, ...buttonProps } = props;
-  return (
-    <Tooltip content={tooltip} closeDelay={0}>
-      <Button className="h-12 w-12" isIconOnly {...buttonProps}>
-        {icon}
-      </Button>
-    </Tooltip>
+  const { tooltip, icon, className, size = "md", withTooltip = true, ...buttonProps } = props;
+  
+  const sizeClasses = {
+    sm: "h-8 w-8",
+    md: "h-12 w-12",
+    lg: "h-14 w-14",
+  };
+  
+  const button = (
+    <Button
+      className={cn(sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.md, className)}
+      isIconOnly
+      size={size}
+      {...buttonProps}
+    >
+      {icon}
+    </Button>
   );
+
+  if (!withTooltip) return button;
+
+  return <Tooltip content={tooltip} closeDelay={0}>{button}</Tooltip>;
 }

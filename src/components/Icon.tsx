@@ -45,6 +45,36 @@ export const EditIcon = (prop: React.SVGProps<SVGSVGElement>) => {
   );
 };
 
+export const CopyIcon = (prop: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="24px"
+      viewBox="0 0 24 24"
+      width="24px"
+      {...prop}
+    >
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M16 1H4c-1.1 0-2 .9-2 2v12h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+    </svg>
+  );
+};
+
+export const PasteIcon = (prop: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="24px"
+      viewBox="0 0 24 24"
+      width="24px"
+      {...prop}
+    >
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M19 2h-4.18C14.4.84 13.3 0 12 0s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v3h2V4h2.09c.46 1.19 1.63 2 2.91 2s2.45-.81 2.91-2H17v16H7v-2H5v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM12 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM3 9h8v2H3V9zm0 4h8v2H3v-2zm0 4h6v2H3v-2z" />
+    </svg>
+  );
+};
+
 export const GithubIcon = (prop: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
