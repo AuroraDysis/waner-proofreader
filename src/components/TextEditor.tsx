@@ -17,6 +17,7 @@ interface TextEditorProps {
   variant?: "original" | "modified";
   onPaste?: () => void | Promise<void>;
   onCopy?: () => void | Promise<void>;
+  autoResize?: boolean; // when false, fill container and scroll
 }
 
 export default function TextEditor({
@@ -29,15 +30,19 @@ export default function TextEditor({
   className = "",
   onPaste,
   onCopy,
+  autoResize = true,
 }: TextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   useEffect(() => {
-    if (textareaRef.current) {
+    if (!textareaRef.current) return;
+    if (autoResize) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 200)}px`;
+    } else {
+      textareaRef.current.style.height = "100%";
     }
-  }, [value]);
+  }, [value, autoResize]);
   
   const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
   const charCount = value.length;
@@ -49,7 +54,7 @@ export default function TextEditor({
       transition={{ duration: 0.3 }}
       className={className}
     >
-      <Card className="h-full">
+      <Card className="h-full flex flex-col">
         <CardHeader className="flex justify-between items-center pb-2">
           <h3 className="text-lg font-semibold">{label}</h3>
           <div className="flex items-center gap-2">
@@ -77,22 +82,25 @@ export default function TextEditor({
             )}
           </div>
         </CardHeader>
-        <CardBody className="pt-2">
-          <Textarea
-            ref={textareaRef}
-            value={value}
-            onValueChange={onChange}
-            placeholder={placeholder}
-            isReadOnly={isReadOnly || isLoading}
-            minRows={8}
-            maxRows={30}
-            variant="bordered"
-            classNames={{
-              input: "text-base",
-              inputWrapper: isLoading ? "opacity-60" : ""
-            }}
-            description={isLoading ? "AI is processing..." : undefined}
-          />
+        <CardBody className="pt-2 flex-1 min-h-0">
+          <div className="h-full min-h-0">
+            <Textarea
+              ref={textareaRef}
+              value={value}
+              onValueChange={onChange}
+              placeholder={placeholder}
+              isReadOnly={isReadOnly || isLoading}
+              minRows={autoResize ? 8 : undefined}
+              maxRows={autoResize ? 30 : undefined}
+              variant="bordered"
+              className="h-full"
+              classNames={{
+                input: "text-base h-full",
+                inputWrapper: `${isLoading ? "opacity-60" : ""} h-full`
+              }}
+              description={isLoading ? "AI is processing..." : undefined}
+            />
+          </div>
         </CardBody>
       </Card>
     </motion.div>
