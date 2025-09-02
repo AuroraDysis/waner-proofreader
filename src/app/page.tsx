@@ -1,42 +1,21 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { 
-  Card, 
-  CardBody, 
-  Link, 
-  useDisclosure, 
-  Tabs, 
-  Tab,
-  Button,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Textarea,
-} from "@heroui/react";
+import { Card, CardBody, useDisclosure, Tabs, Tab, Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import TextEditor from "@/components/TextEditor";
 import DiffViewer from "@/components/DiffViewer";
 import ControlPanel from "@/components/ControlPanel";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
 import ErrorModal from "@/components/ErrorModal";
-import { 
-  GithubIcon, 
-  SettingIcon, 
-  LightbulbIcon,
-  EditIcon,
-} from "@/components/Icon";
+import { EditIcon } from "@/components/Icon";
 
-import { generate_system_prompt } from "@/lib/prompt";
 import { useProofreader } from "@/hooks/useProofreader";
 import { useModels } from "@/hooks/useModels";
 
 export default function HomePage() {
   const settingDisclosure = useDisclosure();
-  const popoverDisclosure = useDisclosure();
   const [activeTab, setActiveTab] = useState("original");
   const [isMobile, setIsMobile] = useState(false);
   
@@ -85,92 +64,50 @@ export default function HomePage() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
   
-  const systemPrompt = useMemo(
-    () => generate_system_prompt(context, instruction),
-    [context, instruction]
-  );
-  
-  const showDiff = useMemo(
-    () => originalText.trim() && modifiedText.trim() && originalText !== modifiedText,
-    [originalText, modifiedText]
-  );
+  // Always render Diff View to avoid layout flicker while typing
+
+  const pasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) setOriginalText(text);
+    } catch (e) {
+      console.error("Failed to read clipboard", e);
+    }
+  };
+
+  const copyModifiedToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(modifiedText || "");
+    } catch (e) {
+      console.error("Failed to write clipboard", e);
+    }
+  };
+
+  const copyOriginalToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(originalText || "");
+    } catch (e) {
+      console.error("Failed to write clipboard", e);
+    }
+  };
+
+  const pasteIntoModified = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) setModifiedText(text);
+    } catch (e) {
+      console.error("Failed to read clipboard", e);
+    }
+  };
   
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-background/80 border-b">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Waner Proofreader
-              </h1>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Popover 
-                placement="bottom" 
-                isOpen={popoverDisclosure.isOpen}
-                onOpenChange={popoverDisclosure.onOpenChange}
-              >
-                <PopoverTrigger>
-                  <IconButton
-                    tooltip="System Prompt"
-                    icon={<LightbulbIcon className="dark:invert h-7 w-7" />}
-                    isIconOnly
-                    size="lg"
-                  />
-                </PopoverTrigger>
-                <PopoverContent>
-                  <div className="w-80 md:w-96 p-2">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-lg font-semibold">System Prompt</h3>
-                      <Button 
-                        size="sm" 
-                        variant="light" 
-                        isIconOnly
-                        onPress={popoverDisclosure.onClose}
-                      >
-                        ✕
-                      </Button>
-                    </div>
-                    <Textarea
-                      value={systemPrompt}
-                      minRows={10}
-                      maxRows={15}
-                      isReadOnly
-                      variant="bordered"
-                      size="lg"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-              
-              <IconButton
-                tooltip="GitHub"
-                icon={<GithubIcon className="dark:invert h-7 w-7" />}
-                as={Link}
-                isIconOnly
-                size="lg"
-                href="https://github.com/AuroraDysis/waner-proofreader"
-                isExternal
-              />
-              
-              <ThemeSwitcher size="lg" />
-              
-              <IconButton
-                tooltip="Settings"
-                icon={<SettingIcon className="dark:invert h-7 w-7" />}
-                onPress={settingDisclosure.onOpen}
-                size="lg"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-      
-      <main className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="min-h-screen bg-background grid place-items-center">
+      <main className="container mx-auto px-4 py-6">
+        <Card className="mx-auto w-full sm:max-w-3xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[88rem] min-h-[85vh]">
+          <CardBody className="h-full flex flex-col">
+        <div className="flex-1 flex flex-col">
         {isMobile ? (
-          <div className="space-y-4">
+          <div className="space-y-4 flex-1 flex flex-col min-h-0">
             <ControlPanel
               model={model}
               setModel={setModel}
@@ -184,11 +121,13 @@ export default function HomePage() {
               onProofread={proofread}
               isProofreading={isLoading}
               onStop={stop}
+              onOpenSettings={settingDisclosure.onOpen}
             />
             
-            <Card>
-              <CardBody className="p-0">
+            <Card className="flex-1 flex flex-col min-h-0">
+              <CardBody className="p-0 flex-1 flex flex-col min-h-0">
                 <Tabs
+                  className="flex-1 flex flex-col min-h-0"
                   selectedKey={activeTab}
                   onSelectionChange={(key) => setActiveTab(key as string)}
                   classNames={{
@@ -203,6 +142,8 @@ export default function HomePage() {
                         onChange={setOriginalText}
                         label="Original Text"
                         variant="original"
+                        onPaste={pasteFromClipboard}
+                        onCopy={copyOriginalToClipboard}
                       />
                     </div>
                   </Tab>
@@ -214,19 +155,18 @@ export default function HomePage() {
                         label="Modified Text"
                         variant="modified"
                         isLoading={isLoading}
+                        onPaste={pasteIntoModified}
+                        onCopy={copyModifiedToClipboard}
                       />
                     </div>
                   </Tab>
-                  {showDiff && (
-                    <Tab key="diff" title="Compare">
-                      <div className="p-4">
-                        <DiffViewer
-                          original={originalText}
-                          modified={modifiedText}
-                        />
+                  <Tab key="diff" title="Compare">
+                    <div className="p-4 h-full flex flex-col min-h-0">
+                      <div className="flex-1 min-h-0">
+                        <DiffViewer original={originalText} modified={modifiedText} />
                       </div>
-                    </Tab>
-                  )}
+                    </div>
+                  </Tab>
                 </Tabs>
               </CardBody>
             </Card>
@@ -244,7 +184,7 @@ export default function HomePage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-12 gap-6">
+          <div className="grid grid-cols-12 gap-6 h-full">
             <div className="col-span-3">
               <ControlPanel
                 model={model}
@@ -260,66 +200,41 @@ export default function HomePage() {
                 isProofreading={isLoading}
                 onStop={stop}
                 className="sticky top-24"
+                onOpenSettings={settingDisclosure.onOpen}
               />
             </div>
             
-            <div className="col-span-9">
-              <AnimatePresence mode="wait">
-                {showDiff ? (
-                  <motion.div
-                    key="diff"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4">
-                      <TextEditor
-                        value={originalText}
-                        onChange={setOriginalText}
-                        label="Original Text"
-                        variant="original"
-                      />
-                      <TextEditor
-                        value={modifiedText}
-                        onChange={setModifiedText}
-                        label="Modified Text"
-                        variant="modified"
-                        isLoading={isLoading}
-                      />
-                    </div>
-                    <DiffViewer
-                      original={originalText}
-                      modified={modifiedText}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="editors"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="grid grid-cols-2 gap-4"
-                  >
-                    <TextEditor
-                      value={originalText}
-                      onChange={setOriginalText}
-                      label="Original Text"
-                      variant="original"
-                    />
-                    <TextEditor
-                      value={modifiedText}
-                      onChange={setModifiedText}
-                      label="Modified Text"
-                      variant="modified"
-                      isLoading={isLoading}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className="col-span-9 h-full flex flex-col">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 flex-1 flex flex-col">
+                <div className="grid grid-cols-2 gap-4">
+                  <TextEditor
+                    value={originalText}
+                    onChange={setOriginalText}
+                    label="Original Text"
+                    variant="original"
+                    onPaste={pasteFromClipboard}
+                    onCopy={copyOriginalToClipboard}
+                  />
+                  <TextEditor
+                    value={modifiedText}
+                    onChange={setModifiedText}
+                    label="Modified Text"
+                    variant="modified"
+                    isLoading={isLoading}
+                    onPaste={pasteIntoModified}
+                    onCopy={copyModifiedToClipboard}
+                  />
+                </div>
+                <div className="flex-1 min-h-0">
+                  <DiffViewer original={originalText} modified={modifiedText} />
+                </div>
+              </motion.div>
             </div>
           </div>
         )}
+        </div>
+          </CardBody>
+        </Card>
       </main>
       
       <SettingModal disclosure={settingDisclosure} />

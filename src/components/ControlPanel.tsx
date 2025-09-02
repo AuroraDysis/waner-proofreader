@@ -8,9 +8,17 @@ import {
   Button,
   Card,
   CardBody,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Textarea,
+  Link,
 } from "@heroui/react";
-import { EditIcon } from "@/components/Icon";
-import { contexts, instructions } from "@/lib/prompt";
+import { EditIcon, GithubIcon, SettingIcon, LightbulbIcon } from "@/components/Icon";
+import IconButton from "@/components/IconButton";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { contexts, instructions, generate_system_prompt } from "@/lib/prompt";
+import { useMemo } from "react";
 
 interface ControlPanelProps {
   model: string | undefined;
@@ -26,6 +34,7 @@ interface ControlPanelProps {
   isProofreading: boolean;
   onStop: () => void;
   className?: string;
+  onOpenSettings: () => void;
 }
 
 export default function ControlPanel({
@@ -42,10 +51,64 @@ export default function ControlPanel({
   isProofreading,
   onStop,
   className = "",
+  onOpenSettings,
 }: ControlPanelProps) {
+  const systemPrompt = useMemo(
+    () => generate_system_prompt(context, instruction),
+    [context, instruction]
+  );
   return (
     <Card className={className}>
       <CardBody className="gap-4">
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="text-xl font-semibold text-center">Waner Proofreader</h2>
+          <div className="flex items-center gap-2">
+            <Popover placement="bottom">
+              <PopoverTrigger>
+                <span>
+                  <IconButton
+                    tooltip="System Prompt"
+                    icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+                    isIconOnly
+                    size="md"
+                  />
+                </span>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className="w-80 md:w-96 p-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold">System Prompt</h3>
+                  </div>
+                  <Textarea
+                    value={systemPrompt}
+                    minRows={10}
+                    maxRows={15}
+                    isReadOnly
+                    variant="bordered"
+                    size="lg"
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+            <IconButton
+              tooltip="GitHub"
+              icon={<GithubIcon className="dark:invert h-6 w-6" />}
+              as={Link}
+              isIconOnly
+              size="md"
+              href="https://github.com/AuroraDysis/waner-proofreader"
+              isExternal
+            />
+            <ThemeSwitcher size="md" />
+            <IconButton
+              tooltip="Settings"
+              icon={<SettingIcon className="dark:invert h-6 w-6" />}
+              onPress={onOpenSettings}
+              size="md"
+            />
+          </div>
+        </div>
+
         <Autocomplete
           allowsCustomValue
           label="AI Model"
@@ -105,6 +168,7 @@ export default function ControlPanel({
         >
           {isProofreading ? "Stop" : "Proofread"}
         </Button>
+
       </CardBody>
     </Card>
   );

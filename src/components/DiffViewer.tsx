@@ -18,28 +18,28 @@ interface DiffSegment {
 
 function computeWordDiff(original: string, modified: string): DiffSegment[] {
   const changes = Diff.diffWords(original, modified);
-  
-  return changes.map(change => ({
+  return changes.map((change) => ({
     type: change.added ? "added" : change.removed ? "removed" : "unchanged",
-    value: change.value
+    value: change.value,
   }));
 }
 
 export default function DiffViewer({ original, modified, className = "" }: DiffViewerProps) {
-  const diffSegments = useMemo(() => 
-    computeWordDiff(original, modified), 
-    [original, modified]
-  );
+  const diffSegments = useMemo(() => computeWordDiff(original, modified), [original, modified]);
   
   const stats = useMemo(() => {
-    const added = diffSegments.filter(s => s.type === "added").reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
-    const removed = diffSegments.filter(s => s.type === "removed").reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
+    const added = diffSegments
+      .filter((s) => s.type === "added")
+      .reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
+    const removed = diffSegments
+      .filter((s) => s.type === "removed")
+      .reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
     return { added, removed };
   }, [diffSegments]);
   
   return (
-    <Card className={className}>
-      <CardBody>
+    <Card className={`h-full ${className}`}>
+      <CardBody className="h-full flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Diff View</h3>
           <div className="flex gap-2">
@@ -52,7 +52,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
           </div>
         </div>
         
-        <ScrollShadow className="max-h-[60vh] overflow-auto">
+        <ScrollShadow className="flex-1 min-h-0 overflow-auto">
           <div className="prose dark:prose-invert max-w-none">
             {diffSegments.map((segment, index) => {
               if (segment.type === "unchanged") {

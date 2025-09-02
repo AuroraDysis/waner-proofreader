@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { Textarea, Card, CardBody, CardHeader, Chip } from "@heroui/react";
+import IconButton from "@/components/IconButton";
+import { CopyIcon, PasteIcon } from "@/components/Icon";
 import { motion } from "framer-motion";
 
 interface TextEditorProps {
@@ -13,6 +15,8 @@ interface TextEditorProps {
   isLoading?: boolean;
   className?: string;
   variant?: "original" | "modified";
+  onPaste?: () => void | Promise<void>;
+  onCopy?: () => void | Promise<void>;
 }
 
 export default function TextEditor({
@@ -23,6 +27,8 @@ export default function TextEditor({
   isReadOnly = false,
   isLoading = false,
   className = "",
+  onPaste,
+  onCopy,
 }: TextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
@@ -46,13 +52,29 @@ export default function TextEditor({
       <Card className="h-full">
         <CardHeader className="flex justify-between items-center pb-2">
           <h3 className="text-lg font-semibold">{label}</h3>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Chip size="sm" variant="flat">
               {wordCount} words
             </Chip>
             <Chip size="sm" variant="flat">
               {charCount} chars
             </Chip>
+            {onPaste && (
+              <IconButton
+                tooltip="Paste"
+                icon={<PasteIcon className="h-5 w-5" />}
+                size="sm"
+                onPress={onPaste}
+              />
+            )}
+            {onCopy && (
+              <IconButton
+                tooltip="Copy"
+                icon={<CopyIcon className="h-5 w-5" />}
+                size="sm"
+                onPress={onCopy}
+              />
+            )}
           </div>
         </CardHeader>
         <CardBody className="pt-2">
