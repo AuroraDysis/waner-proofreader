@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardBody, useDisclosure, Tabs, Tab, Button } from "@heroui/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 import TextEditor from "@/components/TextEditor";
 import DiffViewer from "@/components/DiffViewer";

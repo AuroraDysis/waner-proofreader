@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Textarea, Card, CardBody, CardHeader, Chip } from "@heroui/react";
 import IconButton from "@/components/IconButton";
 import { CopyIcon, PasteIcon } from "@/components/Icon";
