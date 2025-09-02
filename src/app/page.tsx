@@ -211,7 +211,6 @@ export default function HomePage() {
                           variant="original"
                           onPaste={pasteFromClipboard}
                           onCopy={copyOriginalToClipboard}
-                          autoResize={false}
                         />
                         <TextEditor
                           value={modifiedText}
@@ -221,7 +220,6 @@ export default function HomePage() {
                           isLoading={isLoading}
                           onPaste={pasteIntoModified}
                           onCopy={copyModifiedToClipboard}
-                          autoResize={false}
                         />
                       </div>
                       <div className="h-1/2 min-h-0">

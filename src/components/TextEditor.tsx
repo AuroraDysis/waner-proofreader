@@ -30,19 +30,8 @@ export default function TextEditor({
   className = "",
   onPaste,
   onCopy,
-  autoResize = true,
 }: TextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (!textareaRef.current) return;
-    if (autoResize) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 200)}px`;
-    } else {
-      textareaRef.current.style.height = "100%";
-    }
-  }, [value, autoResize]);
 
   const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
   const charCount = value.length;
@@ -90,13 +79,9 @@ export default function TextEditor({
               onValueChange={onChange}
               placeholder={placeholder}
               isReadOnly={isReadOnly || isLoading}
-              minRows={autoResize ? 8 : undefined}
-              maxRows={autoResize ? 30 : undefined}
               variant="bordered"
-              className="h-full"
               classNames={{
-                input: "text-base h-full overflow-auto resize-none",
-                inputWrapper: `${isLoading ? "opacity-60" : ""} h-full`
+                input: `text-base`,
               }}
               description={isLoading ? "AI is processing..." : undefined}
             />
