@@ -62,6 +62,8 @@ export function useProofreader() {
     }
 
     try {
+      // Clear previous error so a repeated error can re-trigger modal
+      setProofreadError(null);
       await complete(originalText, {
         body: {
           model,

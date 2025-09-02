@@ -22,6 +22,7 @@ import ControlPanel from "@/components/ControlPanel";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import IconButton from "@/components/IconButton";
 import SettingModal from "@/components/SettingModal";
+import ErrorModal from "@/components/ErrorModal";
 import { 
   GithubIcon, 
   SettingIcon, 
@@ -51,6 +52,7 @@ export default function HomePage() {
     instruction,
     setInstruction,
     proofreadError,
+    setProofreadError,
     isLoading,
     proofread,
     stop,
@@ -72,11 +74,7 @@ export default function HomePage() {
     }
   }, [isLoading, isMobile]);
   
-  useEffect(() => {
-    if (proofreadError) {
-      settingDisclosure.onOpen();
-    }
-  }, [proofreadError, settingDisclosure]);
+  // Do not auto-open settings on error; show a separate error modal instead
   
   useEffect(() => {
     const checkMobile = () => {
@@ -324,9 +322,11 @@ export default function HomePage() {
         )}
       </main>
       
-      <SettingModal
-        proofreadError={proofreadError}
-        disclosure={settingDisclosure}
+      <SettingModal disclosure={settingDisclosure} />
+      <ErrorModal
+        error={proofreadError}
+        onClose={() => setProofreadError(null)}
+        onOpenSettings={settingDisclosure.onOpen}
       />
     </div>
   );
