@@ -39,8 +39,8 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
   }, [diffSegments]);
   
   return (
-    <Card className={`h-full ${className}`}>
-      <CardBody className="h-full flex flex-col min-h-0">
+    <Card className={`h-full flex flex-col ${className}`}>
+      <CardBody className="flex-1 flex flex-col min-h-0">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Diff View</h3>
           <div className="flex gap-2">

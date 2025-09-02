@@ -101,13 +101,13 @@ export default function HomePage() {
   };
 
   return (
-    <div className="h-screen bg-background grid place-items-center">
-      <main className="h-[75svh] md:h-[83.3333vh] w-9/12">
-        <Card className="h-full">
-          <CardBody className="h-full flex flex-col">
+    <div className="h-screen bg-background md:grid md:place-items-center">
+      <main className="h-full md:h-[83.3333vh] w-full md:w-9/12">
+        {isMobile ? (
+          // Mobile: no outer Card, stretch content
+          <div className="h-full flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">
-              {isMobile ? (
-                <div className="space-y-4 flex-1 flex flex-col min-h-0">
+              <div className="space-y-4 flex-1 flex flex-col min-h-0">
                   <ControlPanel
                     model={model}
                     setModel={setModel}
@@ -158,8 +158,8 @@ export default function HomePage() {
                           </div>
                         </Tab>
                         <Tab key="diff" title="Compare">
-                          <div className="p-4 h-full flex flex-col min-h-0">
-                            <div className="flex-1 min-h-0">
+                          <div className="p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
+                            <div className="flex-1 min-h-0 h-full">
                               <DiffViewer original={originalText} modified={modifiedText} />
                             </div>
                           </div>
@@ -179,56 +179,60 @@ export default function HomePage() {
                       Proofread
                     </Button>
                   )}
-                </div>
-              ) : (
-                <div className="h-full min-h-0 flex flex-col gap-4">
-                  <ControlPanel
-                    model={model}
-                    setModel={setModel}
-                    context={context}
-                    setContext={setContext}
-                    instruction={instruction}
-                    setInstruction={setInstruction}
-                    availableModels={availableModels}
-                    modelsLoading={modelsLoading}
-                    modelsError={modelsError}
-                    onProofread={proofread}
-                    isProofreading={isLoading}
-                    onStop={stop}
-                    onOpenSettings={settingDisclosure.onOpen}
-                  />
-
-                  <div className="flex-1 min-h-0 flex flex-col">
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col gap-4">
-                      <div className="grid grid-cols-2 gap-4 h-1/2 min-h-0">
-                        <TextEditor
-                          value={originalText}
-                          onChange={setOriginalText}
-                          label="Original Text"
-                          variant="original"
-                          onPaste={pasteFromClipboard}
-                          onCopy={copyOriginalToClipboard}
-                        />
-                        <TextEditor
-                          value={modifiedText}
-                          onChange={setModifiedText}
-                          label="Modified Text"
-                          variant="modified"
-                          isLoading={isLoading}
-                          onPaste={pasteIntoModified}
-                          onCopy={copyModifiedToClipboard}
-                        />
-                      </div>
-                      <div className="h-1/2 min-h-0">
-                        <DiffViewer original={originalText} modified={modifiedText} />
-                      </div>
-                    </motion.div>
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        ) : (
+          // Desktop: keep centered Card wrapper
+          <Card className="h-full">
+            <CardBody className="h-full flex flex-col">
+              <div className="h-full min-h-0 flex flex-col gap-4">
+                <ControlPanel
+                  model={model}
+                  setModel={setModel}
+                  context={context}
+                  setContext={setContext}
+                  instruction={instruction}
+                  setInstruction={setInstruction}
+                  availableModels={availableModels}
+                  modelsLoading={modelsLoading}
+                  modelsError={modelsError}
+                  onProofread={proofread}
+                  isProofreading={isLoading}
+                  onStop={stop}
+                  onOpenSettings={settingDisclosure.onOpen}
+                />
+
+                <div className="flex-1 min-h-0 flex flex-col">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col gap-4">
+                    <div className="grid grid-cols-2 gap-4 h-1/2 min-h-0">
+                      <TextEditor
+                        value={originalText}
+                        onChange={setOriginalText}
+                        label="Original Text"
+                        variant="original"
+                        onPaste={pasteFromClipboard}
+                        onCopy={copyOriginalToClipboard}
+                      />
+                      <TextEditor
+                        value={modifiedText}
+                        onChange={setModifiedText}
+                        label="Modified Text"
+                        variant="modified"
+                        isLoading={isLoading}
+                        onPaste={pasteIntoModified}
+                        onCopy={copyModifiedToClipboard}
+                      />
+                    </div>
+                    <div className="h-1/2 min-h-0">
+                      <DiffViewer original={originalText} modified={modifiedText} />
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        )}
       </main>
 
       <SettingModal disclosure={settingDisclosure} />
