@@ -27,7 +27,7 @@ export default function TextEditor({
   placeholder = "Enter your text here...",
   isReadOnly = false,
   isLoading = false,
-  className = "",
+  className = "h-full",
   onPaste,
   onCopy,
 }: TextEditorProps) {

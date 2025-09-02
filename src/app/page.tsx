@@ -108,77 +108,80 @@ export default function HomePage() {
           <div className="h-full flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">
               <div className="space-y-4 flex-1 flex flex-col min-h-0">
-                  <ControlPanel
-                    model={model}
-                    setModel={setModel}
-                    context={context}
-                    setContext={setContext}
-                    instruction={instruction}
-                    setInstruction={setInstruction}
-                    availableModels={availableModels}
-                    modelsLoading={modelsLoading}
-                    modelsError={modelsError}
-                    onProofread={proofread}
-                    isProofreading={isLoading}
-                    onStop={stop}
-                    onOpenSettings={settingDisclosure.onOpen}
-                    isMobile={isMobile}
-                  />
+                <ControlPanel
+                  model={model}
+                  setModel={setModel}
+                  context={context}
+                  setContext={setContext}
+                  instruction={instruction}
+                  setInstruction={setInstruction}
+                  availableModels={availableModels}
+                  modelsLoading={modelsLoading}
+                  modelsError={modelsError}
+                  onProofread={proofread}
+                  isProofreading={isLoading}
+                  onStop={stop}
+                  onOpenSettings={settingDisclosure.onOpen}
+                  isMobile={isMobile}
+                />
 
-                  <Card className="flex-1 flex flex-col min-h-0 m-3">
-                    <CardBody className="p-0 flex-1 flex flex-col min-h-0">
-                      <Tabs
-                        className="flex-1 flex flex-col min-h-0 m-3"
-                        selectedKey={activeTab}
-                        onSelectionChange={(key) => setActiveTab(key as string)}
-                      >
-                        <Tab key="original" title="Original">
-                          <div className="p-4">
-                            <TextEditor
-                              value={originalText}
-                              onChange={setOriginalText}
-                              label={isMobile ? "" : "Original Text"}
-                              variant="original"
-                              onPaste={pasteFromClipboard}
-                              onCopy={copyOriginalToClipboard}
-                            />
-                          </div>
-                        </Tab>
-                        <Tab key="modified" title="Modified">
-                          <div className="p-4">
-                            <TextEditor
-                              value={modifiedText}
-                              onChange={setModifiedText}
-                              label={isMobile ? "" : "Modified Text"}
-                              variant="modified"
-                              isLoading={isLoading}
-                              onPaste={pasteIntoModified}
-                              onCopy={copyModifiedToClipboard}
-                            />
-                          </div>
-                        </Tab>
-                        <Tab key="diff" title="Compare">
-                          <div className="p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
-                            <div className="flex-1 min-h-0 h-full">
-                              <DiffViewer original={originalText} modified={modifiedText} />
-                            </div>
-                          </div>
-                        </Tab>
-                      </Tabs>
-                    </CardBody>
-                  </Card>
-
-                  {!isLoading && (
-                    <Button
-                      color="primary"
-                      size="lg"
-                      onPress={proofread}
-                      startContent={<EditIcon className="h-7 w-7" />}
-                      className="sticky bottom-4 shadow-lg m-3"
+                <Card className="flex-1 flex flex-col min-h-0 m-3">
+                  <CardBody className="p-0 flex-1 flex flex-col min-h-0">
+                    <Tabs
+                      className="flex-1 flex flex-col min-h-0 m-3"
+                      selectedKey={activeTab}
+                      onSelectionChange={(key) => setActiveTab(key as string)}
+                      classNames={{
+                        "base": "max-h-10",
+                        // "tabList": "min-h-15",
+                        "panel": "flex flex-col flex-1 w-[calc(100%-1.5rem)] mx-3"
+                      }}
                     >
-                      Proofread
-                    </Button>
-                  )}
+                      <Tab key="original" title="Original">
+                        <div className="h-full">
+                          <TextEditor
+                            value={originalText}
+                            onChange={setOriginalText}
+                            label={isMobile ? "" : "Original Text"}
+                            variant="original"
+                            onPaste={pasteFromClipboard}
+                            onCopy={copyOriginalToClipboard}
+                          />
+                        </div>
+                      </Tab>
+                      <Tab key="modified" title="Modified">
+                        <div className="h-full">
+                          <TextEditor
+                            value={modifiedText}
+                            onChange={setModifiedText}
+                            label={isMobile ? "" : "Modified Text"}
+                            variant="modified"
+                            isLoading={isLoading}
+                            onPaste={pasteIntoModified}
+                            onCopy={copyModifiedToClipboard}
+                          />
+                        </div>
+                      </Tab>
+                      <Tab key="diff" title="Compare">
+                        <div className="h-full">
+                          <DiffViewer original={originalText} modified={modifiedText} />
+                        </div>
+                      </Tab>
+                    </Tabs>
+                  </CardBody>
+                </Card>
+
+                {!isLoading && (
+                  <Button
+                    color="primary"
+                    size="lg"
+                    onPress={proofread}
+                    startContent={<EditIcon className="h-7 w-7" />}
+                    className="sticky bottom-4 shadow-lg m-3"
+                  >
+                    Proofread
+                  </Button>
+                )}
               </div>
             </div>
           </div>
