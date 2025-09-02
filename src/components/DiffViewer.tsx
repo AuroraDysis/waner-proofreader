@@ -17,7 +17,8 @@ interface DiffSegment {
 }
 
 function computeWordDiff(original: string, modified: string): DiffSegment[] {
-  const changes = Diff.diffWords(original, modified);
+  // Preserve spaces and newlines as tokens so formatting differences show up
+  const changes = Diff.diffWordsWithSpace(original, modified);
   return changes.map((change) => ({
     type: change.added ? "added" : change.removed ? "removed" : "unchanged",
     value: change.value,
@@ -53,7 +54,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
         </div>
         
         <ScrollShadow className="flex-1 min-h-0 overflow-auto">
-          <div className="prose dark:prose-invert max-w-none">
+          <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap break-words">
             {diffSegments.map((segment, index) => {
               if (segment.type === "unchanged") {
                 return (
