@@ -71,17 +71,9 @@ export default function HomePage() {
       const text = await navigator.clipboard.readText();
       if (text) {
         setOriginalText(text);
-        addToast({
-          color: "success",
-          description: "Text pasted successfully"
-        });
       }
     } catch (e) {
       console.error("Failed to read clipboard", e);
-      addToast({
-        color: "danger",
-        description: "Failed to paste text"
-      });
     }
   };
 
@@ -90,13 +82,15 @@ export default function HomePage() {
       await navigator.clipboard.writeText(modifiedText || "");
       addToast({
         color: "success",
-        description: "Modified text copied to clipboard"
+        description: "Modified text copied to clipboard",
+        timeout: 1000
       });
     } catch (e) {
       console.error("Failed to write clipboard", e);
       addToast({
         color: "danger",
-        description: "Failed to copy text"
+        description: "Failed to copy text",
+        timeout: 1000
       });
     }
   };
@@ -106,13 +100,15 @@ export default function HomePage() {
       await navigator.clipboard.writeText(originalText || "");
       addToast({
         color: "success",
-        description: "Original text copied to clipboard"
+        description: "Original text copied to clipboard",
+        timeout: 1000
       });
     } catch (e) {
       console.error("Failed to write clipboard", e);
       addToast({
         color: "danger",
-        description: "Failed to copy text"
+        description: "Failed to copy text",
+        timeout: 1000
       });
     }
   };
@@ -122,17 +118,9 @@ export default function HomePage() {
       const text = await navigator.clipboard.readText();
       if (text) {
         setModifiedText(text);
-        addToast({
-          color: "success",
-          description: "Text pasted successfully"
-        });
       }
     } catch (e) {
       console.error("Failed to read clipboard", e);
-      addToast({
-        color: "danger",
-        description: "Failed to paste text"
-      });
     }
   };
 
