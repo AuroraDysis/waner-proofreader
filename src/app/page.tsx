@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress } from "@heroui/react";
+import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress, addToast } from "@heroui/react";
 import { motion } from "framer-motion";
 
 import TextEditor from "@/components/TextEditor";
@@ -69,34 +69,70 @@ export default function HomePage() {
   const pasteFromClipboard = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      if (text) setOriginalText(text);
+      if (text) {
+        setOriginalText(text);
+        addToast({
+          color: "success",
+          description: "Text pasted successfully"
+        });
+      }
     } catch (e) {
       console.error("Failed to read clipboard", e);
+      addToast({
+        color: "danger",
+        description: "Failed to paste text"
+      });
     }
   };
 
   const copyModifiedToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(modifiedText || "");
+      addToast({
+        color: "success",
+        description: "Modified text copied to clipboard"
+      });
     } catch (e) {
       console.error("Failed to write clipboard", e);
+      addToast({
+        color: "danger",
+        description: "Failed to copy text"
+      });
     }
   };
 
   const copyOriginalToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(originalText || "");
+      addToast({
+        color: "success",
+        description: "Original text copied to clipboard"
+      });
     } catch (e) {
       console.error("Failed to write clipboard", e);
+      addToast({
+        color: "danger",
+        description: "Failed to copy text"
+      });
     }
   };
 
   const pasteIntoModified = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      if (text) setModifiedText(text);
+      if (text) {
+        setModifiedText(text);
+        addToast({
+          color: "success",
+          description: "Text pasted successfully"
+        });
+      }
     } catch (e) {
       console.error("Failed to read clipboard", e);
+      addToast({
+        color: "danger",
+        description: "Failed to paste text"
+      });
     }
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -12,6 +12,7 @@ export default function CustomProvider({
   return (
     <HeroUIProvider>
       <NextThemesProvider attribute="class" enableSystem>
+        <ToastProvider />
         <ErrorBoundary fallback={<div>Something went wrong</div>}>
           {children}
         </ErrorBoundary>
