@@ -14,6 +14,7 @@ import {
   Textarea,
   Link,
 } from "@heroui/react";
+import { CircularProgress } from "@heroui/react";
 import { EditIcon, GithubIcon, SettingIcon, LightbulbIcon } from "@/components/Icon";
 import IconButton from "@/components/IconButton";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
@@ -160,16 +161,22 @@ export default function ControlPanel({
           ))}
         </Select>
 
-        {!isMobile && <Button
-          color={isProofreading ? "danger" : "primary"}
-          variant="flat"
-          onPress={isProofreading ? onStop : onProofread}
-          startContent={!isProofreading && <EditIcon className="h-4 w-4" />}
-          className="w-full md:w-auto"
-        >
-          {isProofreading ? "Stop" : "Proofread"}
-        </Button>}
-
+        {!isMobile && (
+          <IconButton
+            tooltip={isProofreading ? "Stop" : "Proofread"}
+            color={isProofreading ? "danger" : "primary"}
+            variant="flat"
+            onPress={isProofreading ? onStop : onProofread}
+            icon={
+              isProofreading ? (
+                <CircularProgress aria-label="Proofreading" size="sm" />
+              ) : (
+                <EditIcon className="h-6 w-6" />
+              )
+            }
+            size="md"
+          />
+        )}
       </CardBody>
     </Card>
   );
