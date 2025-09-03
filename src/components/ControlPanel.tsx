@@ -61,7 +61,7 @@ export default function ControlPanel({
   );
   return (
     <Card className={className}>
-      <CardBody className="gap-4 flex flex-col md:flex-row md:flex-wrap md:items-end">
+      <CardBody className="gap-4 flex flex-col md:flex-row md:flex-nowrap md:items-end md:overflow-x-auto">
         <div className="flex items-center gap-2 md:mr-auto">
           <Popover placement="bottom">
             <PopoverTrigger>
