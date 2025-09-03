@@ -163,14 +163,12 @@ export default function ControlPanel({
         {!isMobile && (
           <IconButton
             tooltip={isProofreading ? "Stop" : "Proofread"}
-            color={isProofreading ? "danger" : "primary"}
-            variant="flat"
             onPress={isProofreading ? onStop : onProofread}
             icon={
               isProofreading ? (
-                <CircularProgress aria-label="Proofreading" size="sm" />
+                <CircularProgress aria-label="Proofreading" size="sm" className="dark:invert" />
               ) : (
-                <EditIcon className="h-6 w-6" />
+                <EditIcon className="dark:invert h-6 w-6" />
               )
             }
             size="md"
