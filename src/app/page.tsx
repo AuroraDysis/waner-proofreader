@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardBody, useDisclosure, Tabs, Tab, Button } from "@heroui/react";
+import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress } from "@heroui/react";
 import { motion } from "framer-motion";
 
 import TextEditor from "@/components/TextEditor";
@@ -172,17 +172,21 @@ export default function HomePage() {
                   </CardBody>
                 </Card>
 
-                {!isLoading && (
-                  <Button
-                    color="primary"
-                    size="lg"
-                    onPress={proofread}
-                    startContent={<EditIcon className="h-7 w-7" />}
-                    className="sticky bottom-4 shadow-lg m-3"
-                  >
-                    Proofread
-                  </Button>
-                )}
+                <Button
+                  color={isLoading ? "danger" : "primary"}
+                  size="lg"
+                  onPress={isLoading ? stop : proofread}
+                  startContent={
+                    isLoading ? (
+                      <CircularProgress aria-label="Proofreading" size="sm" />
+                    ) : (
+                      <EditIcon className="h-7 w-7" />
+                    )
+                  }
+                  className="sticky bottom-4 shadow-lg m-3"
+                >
+                  {isLoading ? "Stop" : "Proofread"}
+                </Button>
               </div>
             </div>
           </div>
