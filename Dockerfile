@@ -3,7 +3,7 @@
 # copyed from
 # https://raw.githubusercontent.com/vercel/next.js/refs/heads/canary/examples/with-docker/Dockerfile
 
-FROM node:23-slim AS base
+FROM node:24-slim AS base
 
 # Install dependencies only when needed
 FROM base AS deps
