@@ -40,7 +40,11 @@ export default function HomePage() {
   const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
 
   useEffect(() => {
-    if (availableModels.length > 0 && !model) {
+    if (availableModels.length === 0) {
+      return;
+    }
+
+    if (!model || !availableModels.includes(model)) {
       setModel(availableModels[0]);
     }
   }, [availableModels, model, setModel]);
