@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress, addToast } from "@heroui/react";
 import { motion } from "framer-motion";
 
@@ -39,14 +39,18 @@ export default function HomePage() {
 
   const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
 
+  const hasInitializedModel = useRef(false);
+
   useEffect(() => {
-    if (availableModels.length === 0) {
+    if (hasInitializedModel.current || availableModels.length === 0) {
       return;
     }
 
     if (!model || !availableModels.includes(model)) {
       setModel(availableModels[0]);
     }
+
+    hasInitializedModel.current = true;
   }, [availableModels, model, setModel]);
 
 
