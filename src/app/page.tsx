@@ -178,7 +178,6 @@ export default function HomePage() {
                             label={isMobile ? "" : "Original Text"}
                             variant="original"
                             onPaste={pasteFromClipboard}
-                            onCopy={copyOriginalToClipboard}
                           />
                         </div>
                       </Tab>
@@ -190,7 +189,6 @@ export default function HomePage() {
                             label={isMobile ? "" : "Modified Text"}
                             variant="modified"
                             isLoading={isLoading}
-                            onPaste={pasteIntoModified}
                             onCopy={copyModifiedToClipboard}
                           />
                         </div>
@@ -252,7 +250,6 @@ export default function HomePage() {
                         label="Original Text"
                         variant="original"
                         onPaste={pasteFromClipboard}
-                        onCopy={copyOriginalToClipboard}
                       />
                       <TextEditor
                         value={modifiedText}
@@ -260,7 +257,6 @@ export default function HomePage() {
                         label="Modified Text"
                         variant="modified"
                         isLoading={isLoading}
-                        onPaste={pasteIntoModified}
                         onCopy={copyModifiedToClipboard}
                       />
                     </div>
