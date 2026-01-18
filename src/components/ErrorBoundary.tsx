@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader, Button } from "@heroui/react";
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 
 interface ErrorFallbackProps {
-  error: Error;
+  error: any;
   resetErrorBoundary: () => void;
 }
 
