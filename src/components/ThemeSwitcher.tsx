@@ -4,13 +4,17 @@ import { useTheme } from "next-themes";
 import { LightModeIcon, DarkModeIcon } from "@/components/Icon";
 import IconButton from "@/components/IconButton";
 import type { ButtonProps } from "@heroui/react";
+import { useSyncExternalStore } from "react";
+
+const subscribe = () => () => {};
 
 interface ThemeSwitcherProps {
   size?: ButtonProps["size"];
 }
 
 export function ThemeSwitcher({ size = "md" }: ThemeSwitcherProps = {}) {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
   
   const iconSizeClasses = {
     sm: "h-5 w-5",
@@ -19,18 +23,13 @@ export function ThemeSwitcher({ size = "md" }: ThemeSwitcherProps = {}) {
   };
   
   const iconClass = `dark:invert ${iconSizeClasses[size as keyof typeof iconSizeClasses] || iconSizeClasses.md}`;
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <IconButton
       tooltip="Toggle Theme"
-      icon={
-        theme === "dark" ? (
-          <DarkModeIcon className={iconClass} />
-        ) : (
-          <LightModeIcon className={iconClass} />
-        )
-      }
-      onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+      icon={isDark ? <DarkModeIcon className={iconClass} /> : <LightModeIcon className={iconClass} />}
+      onPress={() => setTheme(isDark ? "light" : "dark")}
       size={size}
     />
   );
