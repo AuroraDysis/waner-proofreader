@@ -2,14 +2,12 @@
 
 import React from "react";
 import { Card, CardBody, CardHeader, Button } from "@heroui/react";
-import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from "react-error-boundary";
 
-interface ErrorFallbackProps {
-  error: any;
-  resetErrorBoundary: () => void;
-}
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const message = error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error ? error.stack : "";
 
-function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="max-w-lg w-full">
@@ -23,8 +21,8 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
           <details className="cursor-pointer">
             <summary className="font-medium">Error details</summary>
             <pre className="mt-2 p-3 bg-default-100 rounded-lg text-xs overflow-auto">
-              {error.message}
-              {error.stack}
+              {message}
+              {stack}
             </pre>
           </details>
           <Button

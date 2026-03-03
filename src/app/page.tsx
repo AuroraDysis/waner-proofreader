@@ -54,13 +54,6 @@ export default function HomePage() {
   }, [availableModels, model, setModel]);
 
 
-  // Switch to modified tab only when proofreading starts on mobile
-  useEffect(() => {
-    if (isLoading && isMobile) {
-      setActiveTab("modified");
-    }
-  }, [isLoading, isMobile]);
-
   // Do not auto-open settings on error; show a separate error modal instead
 
   useEffect(() => {
@@ -103,33 +96,11 @@ export default function HomePage() {
     }
   };
 
-  const copyOriginalToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(originalText || "");
-      addToast({
-        color: "success",
-        description: "Original text copied to clipboard",
-        timeout: 1000
-      });
-    } catch (e) {
-      console.error("Failed to write clipboard", e);
-      addToast({
-        color: "danger",
-        description: "Failed to copy text",
-        timeout: 1000
-      });
+  const startProofread = () => {
+    if (isMobile) {
+      setActiveTab("modified");
     }
-  };
-
-  const pasteIntoModified = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        setModifiedText(text);
-      }
-    } catch (e) {
-      console.error("Failed to read clipboard", e);
-    }
+    return proofread();
   };
 
   return (
@@ -150,7 +121,7 @@ export default function HomePage() {
                   availableModels={availableModels}
                   modelsLoading={modelsLoading}
                   modelsError={modelsError}
-                  onProofread={proofread}
+                  onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
                   onOpenSettings={settingDisclosure.onOpen}
@@ -205,7 +176,7 @@ export default function HomePage() {
                 <Button
                   color={isLoading ? "danger" : "primary"}
                   size="lg"
-                  onPress={isLoading ? stop : proofread}
+                  onPress={isLoading ? stop : startProofread}
                   startContent={
                     isLoading ? (
                       <CircularProgress aria-label="Proofreading" size="sm" />
@@ -235,7 +206,7 @@ export default function HomePage() {
                   availableModels={availableModels}
                   modelsLoading={modelsLoading}
                   modelsError={modelsError}
-                  onProofread={proofread}
+                  onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
                   onOpenSettings={settingDisclosure.onOpen}
