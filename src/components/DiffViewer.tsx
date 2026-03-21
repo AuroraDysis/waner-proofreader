@@ -2,8 +2,7 @@
 
 import { useMemo } from "react";
 import { Card, CardBody, Chip, ScrollShadow } from "@heroui/react";
-import { motion } from "framer-motion";
-import * as Diff from "diff";
+import { diffWordsWithSpace } from "diff";
 
 interface DiffViewerProps {
   original: string;
@@ -17,8 +16,7 @@ interface DiffSegment {
 }
 
 function computeWordDiff(original: string, modified: string): DiffSegment[] {
-  // Preserve spaces and newlines as tokens so formatting differences show up
-  const changes = Diff.diffWordsWithSpace(original, modified);
+  const changes = diffWordsWithSpace(original, modified);
   return changes.map((change) => ({
     type: change.added ? "added" : change.removed ? "removed" : "unchanged",
     value: change.value,
@@ -27,17 +25,18 @@ function computeWordDiff(original: string, modified: string): DiffSegment[] {
 
 export default function DiffViewer({ original, modified, className = "" }: DiffViewerProps) {
   const diffSegments = useMemo(() => computeWordDiff(original, modified), [original, modified]);
-  
+
   const stats = useMemo(() => {
-    const added = diffSegments
-      .filter((s) => s.type === "added")
-      .reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
-    const removed = diffSegments
-      .filter((s) => s.type === "removed")
-      .reduce((acc, s) => acc + s.value.split(/\s+/).filter(Boolean).length, 0);
+    let added = 0;
+    let removed = 0;
+    for (const s of diffSegments) {
+      const words = s.value.split(/\s+/).filter(Boolean).length;
+      if (s.type === "added") added += words;
+      else if (s.type === "removed") removed += words;
+    }
     return { added, removed };
   }, [diffSegments]);
-  
+
   return (
     <Card className={`h-full flex flex-col ${className}`}>
       <CardBody className="flex-1 flex flex-col min-h-0">
@@ -52,7 +51,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
             </Chip>
           </div>
         </div>
-        
+
         <ScrollShadow className="flex-1 min-h-0 overflow-auto">
           <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap break-words">
             {diffSegments.map((segment, index) => {
@@ -64,27 +63,21 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
                 );
               } else if (segment.type === "added") {
                 return (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ opacity: 0, backgroundColor: "rgb(34 197 94 / 0.3)" }}
-                    animate={{ opacity: 1, backgroundColor: "rgb(34 197 94 / 0.15)" }}
-                    transition={{ duration: 0.3 }}
                     className="bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 px-0.5 rounded"
                   >
                     {segment.value}
-                  </motion.span>
+                  </span>
                 );
               } else {
                 return (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 line-through px-0.5 rounded"
+                    className="opacity-60 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 line-through px-0.5 rounded"
                   >
                     {segment.value}
-                  </motion.span>
+                  </span>
                 );
               }
             })}

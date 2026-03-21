@@ -1,23 +1,22 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@heroui/react";
 import { LinkIcon, LockIcon } from "@/components/Icon";
-import useLocalStorageState from "use-local-storage-state";
 
 export interface SettingModalProps {
   disclosure: ReturnType<typeof useDisclosure>;
+  endpoint: string;
+  setEndpoint: (value: string) => void;
+  apiKey: string;
+  setApiKey: (value: string) => void;
 }
 
 export default function SettingModal({
   disclosure,
+  endpoint,
+  setEndpoint,
+  apiKey,
+  setApiKey,
 }: SettingModalProps) {
   const { isOpen, onOpenChange } = disclosure;
-
-  const [endpoint, setEndpoint] = useLocalStorageState("endpoint", {
-    defaultValue: "",
-  });
-
-  const [apiKey, setApiKey] = useLocalStorageState("apiKey", {
-    defaultValue: "",
-  });
 
   const resetSettings = () => {
     setEndpoint("");
@@ -25,55 +24,52 @@ export default function SettingModal({
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Settings
-              </ModalHeader>
-              <ModalBody>
-                <Input
-                  autoFocus
-                  endContent={
-                    <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
-                  }
-                  label="OpenAI API Key"
-                  placeholder="Enter your API key"
-                  type="password"
-                  variant="bordered"
-                  value={apiKey}
-                  onValueChange={setApiKey}
-                />
-                <Input
-                  autoFocus
-                  endContent={
-                    <LinkIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
-                  }
-                  label="OpenAI Endpoint (optional)"
-                  description="Must start with http(s)://, empty to use server-side configuration"
-                  placeholder="Enter your endpoint"
-                  variant="bordered"
-                  value={endpoint}
-                  onValueChange={setEndpoint}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="flat" onPress={resetSettings}>
-                  Reset to Default
-                </Button>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Save
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              Settings
+            </ModalHeader>
+            <ModalBody>
+              <Input
+                autoFocus
+                endContent={
+                  <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
+                }
+                label="OpenAI API Key"
+                placeholder="Enter your API key"
+                type="password"
+                variant="bordered"
+                value={apiKey}
+                onValueChange={setApiKey}
+              />
+              <Input
+                endContent={
+                  <LinkIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0 dark:invert" />
+                }
+                label="OpenAI Endpoint (optional)"
+                description="Must start with http(s)://, empty to use server-side configuration"
+                placeholder="Enter your endpoint"
+                variant="bordered"
+                value={endpoint}
+                onValueChange={setEndpoint}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="flat" onPress={resetSettings}>
+                Reset to Default
+              </Button>
+              <Button color="danger" variant="flat" onPress={onClose}>
+                Close
+              </Button>
+              <Button color="primary" onPress={onClose}>
+                Save
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
   );
 }

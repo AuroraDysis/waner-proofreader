@@ -1,23 +1,31 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useDeferredValue, useSyncExternalStore } from "react";
 import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress, addToast } from "@heroui/react";
-import { motion } from "framer-motion";
 
+import dynamic from "next/dynamic";
 import TextEditor from "@/components/TextEditor";
-import DiffViewer from "@/components/DiffViewer";
 import ControlPanel from "@/components/ControlPanel";
 import SettingModal from "@/components/SettingModal";
 import ErrorModal from "@/components/ErrorModal";
+
+const DiffViewer = dynamic(() => import("@/components/DiffViewer"), { ssr: false });
 import { EditIcon } from "@/components/Icon";
 
 import { useProofreader } from "@/hooks/useProofreader";
 import { useModels } from "@/hooks/useModels";
 
+const subscribeResize = (callback: () => void) => {
+  window.addEventListener("resize", callback);
+  return () => window.removeEventListener("resize", callback);
+};
+const getSnapshot = () => window.innerWidth < 768;
+const getServerSnapshot = () => false;
+
 export default function HomePage() {
   const settingDisclosure = useDisclosure();
   const [activeTab, setActiveTab] = useState("original");
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeResize, getSnapshot, getServerSnapshot);
 
   const {
     originalText,
@@ -30,6 +38,10 @@ export default function HomePage() {
     setContext,
     instruction,
     setInstruction,
+    endpoint,
+    setEndpoint,
+    apiKey,
+    setApiKey,
     proofreadError,
     setProofreadError,
     isLoading,
@@ -39,33 +51,15 @@ export default function HomePage() {
 
   const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
 
-  const hasInitializedModel = useRef(false);
-
   useEffect(() => {
-    if (hasInitializedModel.current || availableModels.length === 0) {
-      return;
-    }
-
+    if (availableModels.length === 0) return;
     if (!model || !availableModels.includes(model)) {
       setModel(availableModels[0]);
     }
-
-    hasInitializedModel.current = true;
   }, [availableModels, model, setModel]);
 
-
-  // Do not auto-open settings on error; show a separate error modal instead
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Always render Diff View to avoid layout flicker while typing
+  const deferredOriginal = useDeferredValue(originalText);
+  const deferredModified = useDeferredValue(modifiedText);
 
   const pasteFromClipboard = async () => {
     try {
@@ -107,7 +101,6 @@ export default function HomePage() {
     <div className="h-screen bg-background md:grid md:place-items-center">
       <main className="h-full md:h-[83.3333vh] w-full md:w-9/12">
         {isMobile ? (
-          // Mobile: no outer Card, stretch content
           <div className="h-full flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">
               <div className="space-y-4 flex-1 flex flex-col min-h-0">
@@ -146,7 +139,7 @@ export default function HomePage() {
                           <TextEditor
                             value={originalText}
                             onChange={setOriginalText}
-                            label={isMobile ? "" : "Original Text"}
+                            label=""
                             variant="original"
                             onPaste={pasteFromClipboard}
                           />
@@ -157,7 +150,7 @@ export default function HomePage() {
                           <TextEditor
                             value={modifiedText}
                             onChange={setModifiedText}
-                            label={isMobile ? "" : "Modified Text"}
+                            label=""
                             variant="modified"
                             isLoading={isLoading}
                             onCopy={copyModifiedToClipboard}
@@ -166,7 +159,7 @@ export default function HomePage() {
                       </Tab>
                       <Tab key="diff" title="Compare">
                         <div className="h-full">
-                          <DiffViewer original={originalText} modified={modifiedText} />
+                          <DiffViewer original={deferredOriginal} modified={deferredModified} />
                         </div>
                       </Tab>
                     </Tabs>
@@ -192,7 +185,6 @@ export default function HomePage() {
             </div>
           </div>
         ) : (
-          // Desktop: keep centered Card wrapper
           <Card className="h-full">
             <CardBody className="h-full flex flex-col">
               <div className="h-full min-h-0 flex flex-col gap-4">
@@ -213,7 +205,7 @@ export default function HomePage() {
                 />
 
                 <div className="flex-1 min-h-0 flex flex-col">
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col gap-4">
+                  <div className="h-full min-h-0 flex flex-col gap-4">
                     <div className="grid grid-cols-2 gap-4 h-1/2 min-h-0">
                       <TextEditor
                         value={originalText}
@@ -232,9 +224,9 @@ export default function HomePage() {
                       />
                     </div>
                     <div className="h-1/2 min-h-0">
-                      <DiffViewer original={originalText} modified={modifiedText} />
+                      <DiffViewer original={deferredOriginal} modified={deferredModified} />
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
             </CardBody>
@@ -242,7 +234,13 @@ export default function HomePage() {
         )}
       </main>
 
-      <SettingModal disclosure={settingDisclosure} />
+      <SettingModal
+        disclosure={settingDisclosure}
+        endpoint={endpoint}
+        setEndpoint={setEndpoint}
+        apiKey={apiKey}
+        setApiKey={setApiKey}
+      />
       <ErrorModal
         error={proofreadError}
         onClose={() => setProofreadError(null)}

@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { Textarea, Card, CardBody, CardHeader, Chip } from "@heroui/react";
 import IconButton from "@/components/IconButton";
 import { CopyIcon, PasteIcon } from "@/components/Icon";
-import { motion } from "framer-motion";
 
 interface TextEditorProps {
   value: string;
@@ -17,7 +16,7 @@ interface TextEditorProps {
   variant?: "original" | "modified";
   onPaste?: () => void | Promise<void>;
   onCopy?: () => void | Promise<void>;
-  autoResize?: boolean; // when false, fill container and scroll
+  autoResize?: boolean;
 }
 
 export default function TextEditor({
@@ -33,16 +32,11 @@ export default function TextEditor({
 }: TextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
+  const wordCount = useMemo(() => value.trim().split(/\s+/).filter(Boolean).length, [value]);
   const charCount = value.length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={className}
-    >
+    <div className={className}>
       <Card className="h-full flex flex-col">
         <CardHeader className="flex justify-between items-center pb-2">
           <h3 className="text-lg font-semibold">{label}</h3>
@@ -91,6 +85,6 @@ export default function TextEditor({
           </div>
         </CardBody>
       </Card>
-    </motion.div>
+    </div>
   );
 }
