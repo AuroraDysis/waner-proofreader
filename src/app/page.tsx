@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useDeferredValue, useSyncExternalStore, useCallback } from "react";
+import { useState, useEffect, useRef, useDeferredValue, useSyncExternalStore, useCallback } from "react";
 import { Card, Chip, Tabs, Button, ProgressCircle, toast } from "@heroui/react";
 
 import dynamic from "next/dynamic";
@@ -53,7 +53,7 @@ export default function HomePage() {
   const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
 
   const {
-    stats: diffChangeStats,
+    numChanges,
     hasChanges,
     acceptChange,
     rejectChange,
@@ -65,6 +65,26 @@ export default function HomePage() {
     setOriginalText,
     setModifiedText,
   });
+
+  // Flash the "Your Text" editor green briefly after accepting a change
+  const originalEditorRef = useRef<HTMLDivElement>(null);
+  const flashOriginalEditor = useCallback(() => {
+    const el = originalEditorRef.current;
+    if (!el) return;
+    el.classList.add("editor-flash");
+    const timer = setTimeout(() => el.classList.remove("editor-flash"), 600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleAcceptChange = useCallback((indices: number[]) => {
+    acceptChange(indices);
+    flashOriginalEditor();
+  }, [acceptChange, flashOriginalEditor]);
+
+  const handleAcceptAll = useCallback(() => {
+    acceptAll();
+    flashOriginalEditor();
+  }, [acceptAll, flashOriginalEditor]);
 
   useEffect(() => {
     if (availableModels.length === 0) return;
@@ -147,7 +167,7 @@ export default function HomePage() {
                           Changes
                           {!isLoading && hasChanges && (
                             <Chip size="sm" variant="soft" className="ml-1 min-w-0 h-5 text-xs">
-                              {diffChangeStats.added + diffChangeStats.removed}
+                              {numChanges}
                             </Chip>
                           )}
                           <Tabs.Indicator />
@@ -179,9 +199,9 @@ export default function HomePage() {
                           <DiffViewer
                             original={deferredOriginal}
                             modified={deferredModified}
-                            onAcceptChange={acceptChange}
+                            onAcceptChange={handleAcceptChange}
                             onRejectChange={rejectChange}
-                            onAcceptAll={acceptAll}
+                            onAcceptAll={handleAcceptAll}
                             onRejectAll={rejectAll}
                             isStreaming={isLoading}
                           />
@@ -234,16 +254,19 @@ export default function HomePage() {
 
                 <div className="flex-1 min-h-0 min-w-0 flex flex-col gap-4">
                   <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 min-w-0">
-                    <TextEditor
-                      value={originalText}
-                      onChange={setOriginalText}
-                      label="Original Text"
-                      onPaste={pasteFromClipboard}
-                    />
+                    <div ref={originalEditorRef} className="min-w-0 transition-shadow duration-500">
+                      <TextEditor
+                        value={originalText}
+                        onChange={setOriginalText}
+                        label="Your Text"
+                        onPaste={pasteFromClipboard}
+                        className="h-full"
+                      />
+                    </div>
                     <TextEditor
                       value={modifiedText}
                       onChange={setModifiedText}
-                      label="Modified Text"
+                      label="AI Suggestion"
                       isLoading={isLoading}
                       onCopy={copyModifiedToClipboard}
                     />
@@ -252,9 +275,9 @@ export default function HomePage() {
                     <DiffViewer
                       original={deferredOriginal}
                       modified={deferredModified}
-                      onAcceptChange={acceptChange}
+                      onAcceptChange={handleAcceptChange}
                       onRejectChange={rejectChange}
-                      onAcceptAll={acceptAll}
+                      onAcceptAll={handleAcceptAll}
                       onRejectAll={rejectAll}
                       isStreaming={isLoading}
                     />

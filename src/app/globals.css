@@ -50,3 +50,9 @@ input,
 textarea {
   touch-action: manipulation;
 }
+
+/* Flash green on the "Your Text" editor after accepting a change */
+.editor-flash {
+  box-shadow: 0 0 0 2px var(--color-success);
+  border-radius: var(--radius-lg, 12px);
+}

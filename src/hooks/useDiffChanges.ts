@@ -1,7 +1,9 @@
 import { useMemo, useCallback } from "react";
 import {
   computeWordDiff,
+  groupDiffSegments,
   diffStats,
+  changeCount,
   applyDiffAction,
   applyAllActions,
 } from "@/lib/diff-utils";
@@ -24,22 +26,28 @@ export function useDiffChanges({
     [originalText, modifiedText]
   );
 
+  const changes = useMemo(() => groupDiffSegments(segments), [segments]);
+
   const stats = useMemo(() => diffStats(segments), [segments]);
 
-  const hasChanges = stats.added > 0 || stats.removed > 0;
+  const numChanges = useMemo(() => changeCount(changes), [changes]);
 
+  const hasChanges = numChanges > 0;
+
+  /** Accept a change by its segment indices (supports replacement pairs) */
   const acceptChange = useCallback(
-    (index: number) => {
-      const result = applyDiffAction(segments, index, "accept");
+    (indices: number[]) => {
+      const result = applyDiffAction(segments, indices, "accept");
       setOriginalText(result.originalText);
       setModifiedText(result.modifiedText);
     },
     [segments, setOriginalText, setModifiedText]
   );
 
+  /** Reject a change by its segment indices */
   const rejectChange = useCallback(
-    (index: number) => {
-      const result = applyDiffAction(segments, index, "reject");
+    (indices: number[]) => {
+      const result = applyDiffAction(segments, indices, "reject");
       setOriginalText(result.originalText);
       setModifiedText(result.modifiedText);
     },
@@ -60,7 +68,9 @@ export function useDiffChanges({
 
   return {
     segments,
+    changes,
     stats,
+    numChanges,
     hasChanges,
     acceptChange,
     rejectChange,
