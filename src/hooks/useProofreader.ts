@@ -43,9 +43,10 @@ export function useProofreader() {
     defaultValue: "",
   });
 
-  const { complete, isLoading, stop } = useCompletion({
+  const { complete, completion, isLoading, stop } = useCompletion({
     streamProtocol: "text",
     api: "/api/completion",
+    experimental_throttle: 100,
     onError: (error) => {
       setProofreadError(error.message);
     },
@@ -54,6 +55,9 @@ export function useProofreader() {
       setModifiedText(completion);
     },
   });
+
+  // During streaming, use the live completion value; after finish, use persisted modifiedText
+  const streamingText = isLoading && completion ? completion : modifiedText;
 
   const proofread = useCallback(async () => {
     if (!model || !originalText.trim()) {
@@ -109,5 +113,6 @@ export function useProofreader() {
     isLoading,
     proofread,
     stop,
+    streamingText,
   };
 }

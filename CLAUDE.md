@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Waner Proofreader is an AI-powered web application designed to help non-native English speakers proofread text. Built with Next.js 15, TypeScript, and React 19, it provides a side-by-side diff editor for comparing original and AI-corrected text.
+Waner Proofreader is an AI-powered web application designed to help non-native English speakers proofread text. Built with Next.js 15, TypeScript, and React 19, it provides a side-by-side editor with a diff viewer featuring accept/reject controls for reviewing AI-corrected text.
 
 ## Development Commands
 
@@ -29,12 +29,15 @@ pnpm run lint
 
 ### Frontend Architecture
 - **Main Page** (`src/app/page.tsx`): Responsive layout with mobile/desktop views
-- **Text Editor** (`src/components/TextEditor.tsx`): Mobile-friendly textarea-based editor with word/character count
-- **Diff Viewer** (`src/components/DiffViewer.tsx`): Word-level diff visualization with add/remove highlighting
+- **Text Editor** (`src/components/TextEditor.tsx`): Textarea-based editor with word/character count
+- **Diff Viewer** (`src/components/DiffViewer.tsx`): Word-level diff visualization with accept/reject controls
 - **Control Panel** (`src/components/ControlPanel.tsx`): Centralized controls for model selection and proofreading options
-- **Custom Hooks**: 
-  - `useProofreader`: Manages proofreading state and API calls
+- **Custom Hooks**:
+  - `useProofreader`: Manages proofreading state, streaming AI responses, and API calls
+  - `useDiffChanges`: Computes word-level diffs, provides accept/reject change callbacks
   - `useModels`: Fetches available AI models
+- **Shared Utilities**:
+  - `src/lib/diff-utils.ts`: Pure diff computation and change application functions
 - **UI Framework**: HeroUI components with Tailwind CSS v4 for styling
 - **State Management**: Local storage persistence via `use-local-storage-state`
 - **Error Handling**: Error boundary component for graceful error recovery
@@ -75,10 +78,8 @@ Set via `CONFIG` environment variable as either:
 - **Next.js 15** with App Router and Turbopack
 - **React 19** with TypeScript
 - **Vercel AI SDK** for streaming AI responses
-- **Monaco Editor** for code editing
 - **HeroUI** component library
 - **Tailwind CSS v4** for styling
-- **Shiki** for syntax highlighting
 
 ## Deployment
 

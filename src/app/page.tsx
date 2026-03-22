@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useDeferredValue, useSyncExternalStore, useCallback } from "react";
-import { Card, Tabs, Button, ProgressCircle, toast } from "@heroui/react";
+import { Card, Chip, Tabs, Button, ProgressCircle, toast } from "@heroui/react";
 
 import dynamic from "next/dynamic";
 import TextEditor from "@/components/TextEditor";
@@ -14,6 +14,7 @@ import { EditIcon } from "@/components/Icon";
 
 import { useProofreader } from "@/hooks/useProofreader";
 import { useModels } from "@/hooks/useModels";
+import { useDiffChanges } from "@/hooks/useDiffChanges";
 
 const subscribeResize = (callback: () => void) => {
   window.addEventListener("resize", callback);
@@ -50,6 +51,20 @@ export default function HomePage() {
   } = useProofreader();
 
   const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
+
+  const {
+    stats: diffChangeStats,
+    hasChanges,
+    acceptChange,
+    rejectChange,
+    acceptAll,
+    rejectAll,
+  } = useDiffChanges({
+    originalText,
+    modifiedText,
+    setOriginalText,
+    setModifiedText,
+  });
 
   useEffect(() => {
     if (availableModels.length === 0) return;
@@ -126,9 +141,17 @@ export default function HomePage() {
                       onSelectionChange={(key) => setActiveTab(key as string)}
                     >
                       <Tabs.List>
-                        <Tabs.Tab id="original">Original<Tabs.Indicator /></Tabs.Tab>
+                        <Tabs.Tab id="original">Edit<Tabs.Indicator /></Tabs.Tab>
                         <Tabs.Tab id="modified">Modified<Tabs.Indicator /></Tabs.Tab>
-                        <Tabs.Tab id="diff">Compare<Tabs.Indicator /></Tabs.Tab>
+                        <Tabs.Tab id="diff">
+                          Changes
+                          {!isLoading && hasChanges && (
+                            <Chip size="sm" variant="soft" className="ml-1 min-w-0 h-5 text-xs">
+                              {diffChangeStats.added + diffChangeStats.removed}
+                            </Chip>
+                          )}
+                          <Tabs.Indicator />
+                        </Tabs.Tab>
                       </Tabs.List>
                       <Tabs.Panel id="original" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
@@ -136,7 +159,6 @@ export default function HomePage() {
                             value={originalText}
                             onChange={setOriginalText}
                             label=""
-
                             onPaste={pasteFromClipboard}
                           />
                         </div>
@@ -147,7 +169,6 @@ export default function HomePage() {
                             value={modifiedText}
                             onChange={setModifiedText}
                             label=""
-
                             isLoading={isLoading}
                             onCopy={copyModifiedToClipboard}
                           />
@@ -155,7 +176,15 @@ export default function HomePage() {
                       </Tabs.Panel>
                       <Tabs.Panel id="diff" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
-                          <DiffViewer original={deferredOriginal} modified={deferredModified} />
+                          <DiffViewer
+                            original={deferredOriginal}
+                            modified={deferredModified}
+                            onAcceptChange={acceptChange}
+                            onRejectChange={rejectChange}
+                            onAcceptAll={acceptAll}
+                            onRejectAll={rejectAll}
+                            isStreaming={isLoading}
+                          />
                         </div>
                       </Tabs.Panel>
                     </Tabs>
@@ -220,7 +249,15 @@ export default function HomePage() {
                     />
                   </div>
                   <div className="flex-1 min-h-0">
-                    <DiffViewer original={deferredOriginal} modified={deferredModified} />
+                    <DiffViewer
+                      original={deferredOriginal}
+                      modified={deferredModified}
+                      onAcceptChange={acceptChange}
+                      onRejectChange={rejectChange}
+                      onAcceptAll={acceptAll}
+                      onRejectAll={rejectAll}
+                      isStreaming={isLoading}
+                    />
                   </div>
                 </div>
               </div>
