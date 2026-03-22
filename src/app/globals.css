@@ -1,5 +1,44 @@
 @import "tailwindcss";
-@plugin './hero.ts';
-/* Note: You may need to change the path to fit your project structure */
-@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@import "@heroui/styles";
 @custom-variant dark (&:is(.dark *));
+
+/* Override HeroUI default: add visible borders to form fields */
+:root,
+.light,
+[data-theme="light"] {
+  --field-border-width: 1px;
+  --field-border: oklch(90% 0.004 286.32);
+}
+
+.dark,
+[data-theme="dark"] {
+  --field-border-width: 1px;
+  --field-border: oklch(28% 0.006 286.033);
+}
+
+/* Fix HeroUI TextField not growing inside flex containers */
+.textfield {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+}
+
+.textfield > .textarea {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+}
+
+/* Ensure dropdown popovers always appear above all content */
+[data-slot="combo-box-popover"],
+[data-slot="select-popover"],
+[data-slot="popover"] {
+  z-index: 100000 !important;
+}
+
+/* Prevent double-tap zoom delay on interactive elements */
+button,
+a,
+select,
+input,
+textarea {
+  touch-action: manipulation;
+}

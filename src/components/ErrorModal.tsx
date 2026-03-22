@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@heroui/react";
+import { Modal, Button, useOverlayState } from "@heroui/react";
 
 export interface ErrorModalProps {
   error: string | null;
@@ -8,32 +8,37 @@ export interface ErrorModalProps {
 
 export default function ErrorModal({ error, onClose, onOpenSettings }: ErrorModalProps) {
   const isOpen = Boolean(error);
+  const state = useOverlayState({
+    isOpen,
+    onOpenChange: (open) => { if (!open) onClose(); },
+  });
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={(open) => { if (!open) onClose(); }} placement="top-center">
-      <ModalContent>
-        {() => (
-          <>
-            <ModalHeader className="flex flex-col gap-1 text-danger">Error</ModalHeader>
-            <ModalBody>
+    <Modal state={state}>
+      <Modal.Backdrop>
+        <Modal.Container placement="top">
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading className="text-danger">Error</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
               <span className="text-sm text-red-600 dark:text-red-400">
                 {error}
               </span>
-            </ModalBody>
-            <ModalFooter>
+            </Modal.Body>
+            <Modal.Footer>
               {onOpenSettings && (
-                <Button variant="flat" onPress={() => { onClose(); onOpenSettings(); }}>
+                <Button variant="ghost" onPress={() => { onClose(); onOpenSettings(); }}>
                   Open Settings
                 </Button>
               )}
-              <Button color="danger" variant="flat" onPress={onClose}>
+              <Button variant="danger-soft" onPress={onClose}>
                 Close
               </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }
-

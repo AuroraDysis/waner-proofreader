@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Card, CardBody, Chip, ScrollShadow } from "@heroui/react";
+import { Card, Chip, ScrollShadow } from "@heroui/react";
 import { diffWordsWithSpace } from "diff";
 
 interface DiffViewerProps {
@@ -39,14 +39,14 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
 
   return (
     <Card className={`h-full flex flex-col ${className}`}>
-      <CardBody className="flex-1 flex flex-col min-h-0">
+      <Card.Content className="flex-1 flex flex-col min-h-0">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Diff View</h3>
+          <h2 className="text-lg font-semibold">Diff View</h2>
           <div className="flex gap-2">
-            <Chip color="success" variant="flat" size="sm">
+            <Chip color="success" variant="soft" size="sm">
               +{stats.added} added
             </Chip>
-            <Chip color="danger" variant="flat" size="sm">
+            <Chip color="danger" variant="soft" size="sm">
               -{stats.removed} removed
             </Chip>
           </div>
@@ -54,7 +54,9 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
 
         <ScrollShadow className="flex-1 min-h-0 overflow-auto">
           <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap break-words">
-            {diffSegments.map((segment, index) => {
+            {diffSegments.length === 0 || (original === "" && modified === "") ? (
+              <p className="text-foreground/40 italic">Enter text to see differences</p>
+            ) : diffSegments.map((segment, index) => {
               if (segment.type === "unchanged") {
                 return (
                   <span key={index} className="text-foreground">
@@ -65,7 +67,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
                 return (
                   <span
                     key={index}
-                    className="bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 px-0.5 rounded"
+                    className="bg-success-soft text-success-soft-foreground px-0.5 rounded"
                   >
                     {segment.value}
                   </span>
@@ -74,7 +76,7 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
                 return (
                   <span
                     key={index}
-                    className="opacity-60 bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-300 line-through px-0.5 rounded"
+                    className="opacity-60 bg-danger-soft text-danger-soft-foreground line-through px-0.5 rounded"
                   >
                     {segment.value}
                   </span>
@@ -82,8 +84,9 @@ export default function DiffViewer({ original, modified, className = "" }: DiffV
               }
             })}
           </div>
+
         </ScrollShadow>
-      </CardBody>
+      </Card.Content>
     </Card>
   );
 }

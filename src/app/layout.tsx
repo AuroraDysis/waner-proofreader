@@ -16,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+      </head>
       <body className="antialiased">
         <CustomProvider>
           <ErrorBoundary>{children}</ErrorBoundary>

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useDeferredValue, useSyncExternalStore } from "react";
-import { Card, CardBody, useDisclosure, Tabs, Tab, Button, CircularProgress, addToast } from "@heroui/react";
+import { useState, useEffect, useDeferredValue, useSyncExternalStore, useCallback } from "react";
+import { Card, Tabs, Button, ProgressCircle, toast } from "@heroui/react";
 
 import dynamic from "next/dynamic";
 import TextEditor from "@/components/TextEditor";
 import ControlPanel from "@/components/ControlPanel";
-import SettingModal from "@/components/SettingModal";
-import ErrorModal from "@/components/ErrorModal";
 
+const SettingModal = dynamic(() => import("@/components/SettingModal"), { ssr: false });
+const ErrorModal = dynamic(() => import("@/components/ErrorModal"), { ssr: false });
 const DiffViewer = dynamic(() => import("@/components/DiffViewer"), { ssr: false });
 import { EditIcon } from "@/components/Icon";
 
@@ -23,7 +23,7 @@ const getSnapshot = () => window.innerWidth < 768;
 const getServerSnapshot = () => false;
 
 export default function HomePage() {
-  const settingDisclosure = useDisclosure();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("original");
   const isMobile = useSyncExternalStore(subscribeResize, getSnapshot, getServerSnapshot);
 
@@ -75,18 +75,10 @@ export default function HomePage() {
   const copyModifiedToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(modifiedText || "");
-      addToast({
-        color: "success",
-        description: "Modified text copied to clipboard",
-        timeout: 1000
-      });
+      toast("Modified text copied to clipboard", { timeout: 1000 });
     } catch (e) {
       console.error("Failed to write clipboard", e);
-      addToast({
-        color: "danger",
-        description: "Failed to copy text",
-        timeout: 1000
-      });
+      toast("Failed to copy text", { variant: "danger", timeout: 1000 });
     }
   };
 
@@ -97,9 +89,14 @@ export default function HomePage() {
     return proofread();
   };
 
+  const onOpenSettings = useCallback(() => setSettingsOpen(true), []);
+
   return (
     <div className="h-screen bg-background md:grid md:place-items-center">
-      <main className="h-full md:h-[83.3333vh] w-full md:w-9/12">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground">
+        Skip to main content
+      </a>
+      <main id="main-content" className="h-full md:h-[83.3333vh] w-full md:w-9/12 min-w-0 overflow-clip">
         {isMobile ? (
           <div className="h-full flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">
@@ -117,77 +114,74 @@ export default function HomePage() {
                   onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
-                  onOpenSettings={settingDisclosure.onOpen}
+                  onOpenSettings={onOpenSettings}
                   isMobile={isMobile}
                 />
 
                 <Card className="flex-1 flex flex-col min-h-0 m-3">
-                  <CardBody className="p-0 flex-1 flex flex-col min-h-0">
+                  <Card.Content className="p-0 flex-1 flex flex-col min-h-0">
                     <Tabs
                       className="flex-1 flex flex-col min-h-0 m-3"
                       selectedKey={activeTab}
                       onSelectionChange={(key) => setActiveTab(key as string)}
-                      classNames={{
-                        "base": "flex-1 flex flex-col max-h-5",
-                        "tabList": "flex-shrink-0 flex-row",
-                        "tabContent": "flex-1 min-h-0 flex flex-col",
-                        "panel": "flex-1 min-h-0 p-3"
-                      }}
                     >
-                      <Tab key="original" title="Original">
+                      <Tabs.List>
+                        <Tabs.Tab id="original">Original</Tabs.Tab>
+                        <Tabs.Tab id="modified">Modified</Tabs.Tab>
+                        <Tabs.Tab id="diff">Compare</Tabs.Tab>
+                      </Tabs.List>
+                      <Tabs.Panel id="original" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
                           <TextEditor
                             value={originalText}
                             onChange={setOriginalText}
                             label=""
-                            variant="original"
+
                             onPaste={pasteFromClipboard}
                           />
                         </div>
-                      </Tab>
-                      <Tab key="modified" title="Modified">
+                      </Tabs.Panel>
+                      <Tabs.Panel id="modified" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
                           <TextEditor
                             value={modifiedText}
                             onChange={setModifiedText}
                             label=""
-                            variant="modified"
+
                             isLoading={isLoading}
                             onCopy={copyModifiedToClipboard}
                           />
                         </div>
-                      </Tab>
-                      <Tab key="diff" title="Compare">
+                      </Tabs.Panel>
+                      <Tabs.Panel id="diff" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
                           <DiffViewer original={deferredOriginal} modified={deferredModified} />
                         </div>
-                      </Tab>
+                      </Tabs.Panel>
                     </Tabs>
-                  </CardBody>
+                  </Card.Content>
                 </Card>
 
                 <Button
-                  color={isLoading ? "danger" : "primary"}
+                  variant={isLoading ? "danger" : "primary"}
                   size="lg"
                   onPress={isLoading ? stop : startProofread}
-                  startContent={
-                    isLoading ? (
-                      <CircularProgress aria-label="Proofreading" size="sm" />
-                    ) : (
-                      <EditIcon className="h-7 w-7" />
-                    )
-                  }
                   className="sticky bottom-4 shadow-lg m-3"
                 >
+                  {isLoading ? (
+                    <ProgressCircle aria-label="Proofreading" size="sm" />
+                  ) : (
+                    <EditIcon className="h-7 w-7" />
+                  )}
                   {isLoading ? "Stop" : "Proofread"}
                 </Button>
               </div>
             </div>
           </div>
         ) : (
-          <Card className="h-full">
-            <CardBody className="h-full flex flex-col">
-              <div className="h-full min-h-0 flex flex-col gap-4">
+          <Card className="h-full overflow-clip">
+            <Card.Content className="h-full flex flex-col min-w-0">
+              <div className="h-full min-h-0 flex flex-col gap-4 min-w-0">
                 <ControlPanel
                   model={model}
                   setModel={setModel}
@@ -201,41 +195,38 @@ export default function HomePage() {
                   onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
-                  onOpenSettings={settingDisclosure.onOpen}
+                  onOpenSettings={onOpenSettings}
                 />
 
-                <div className="flex-1 min-h-0 flex flex-col">
-                  <div className="h-full min-h-0 flex flex-col gap-4">
-                    <div className="grid grid-cols-2 gap-4 h-1/2 min-h-0">
-                      <TextEditor
-                        value={originalText}
-                        onChange={setOriginalText}
-                        label="Original Text"
-                        variant="original"
-                        onPaste={pasteFromClipboard}
-                      />
-                      <TextEditor
-                        value={modifiedText}
-                        onChange={setModifiedText}
-                        label="Modified Text"
-                        variant="modified"
-                        isLoading={isLoading}
-                        onCopy={copyModifiedToClipboard}
-                      />
-                    </div>
-                    <div className="h-1/2 min-h-0">
-                      <DiffViewer original={deferredOriginal} modified={deferredModified} />
-                    </div>
+                <div className="flex-1 min-h-0 min-w-0 flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 min-w-0">
+                    <TextEditor
+                      value={originalText}
+                      onChange={setOriginalText}
+                      label="Original Text"
+                      onPaste={pasteFromClipboard}
+                    />
+                    <TextEditor
+                      value={modifiedText}
+                      onChange={setModifiedText}
+                      label="Modified Text"
+                      isLoading={isLoading}
+                      onCopy={copyModifiedToClipboard}
+                    />
+                  </div>
+                  <div className="flex-1 min-h-0">
+                    <DiffViewer original={deferredOriginal} modified={deferredModified} />
                   </div>
                 </div>
               </div>
-            </CardBody>
+            </Card.Content>
           </Card>
         )}
       </main>
 
       <SettingModal
-        disclosure={settingDisclosure}
+        isOpen={settingsOpen}
+        onOpenChange={setSettingsOpen}
         endpoint={endpoint}
         setEndpoint={setEndpoint}
         apiKey={apiKey}
@@ -244,7 +235,7 @@ export default function HomePage() {
       <ErrorModal
         error={proofreadError}
         onClose={() => setProofreadError(null)}
-        onOpenSettings={settingDisclosure.onOpen}
+        onOpenSettings={onOpenSettings}
       />
     </div>
   );

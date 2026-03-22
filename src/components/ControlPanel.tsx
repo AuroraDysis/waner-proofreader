@@ -2,18 +2,16 @@
 
 import {
   Select,
-  SelectItem,
-  Autocomplete,
-  AutocompleteItem,
+  ComboBox,
   Card,
-  CardBody,
   Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Textarea,
-  Link,
+  Button,
+  TextArea,
+  ListBox,
+  Label,
+  Input,
+  ProgressCircle,
 } from "@heroui/react";
-import { CircularProgress } from "@heroui/react";
 import { EditIcon, GithubIcon, SettingIcon, LightbulbIcon } from "@/components/Icon";
 import IconButton from "@/components/IconButton";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
@@ -46,8 +44,8 @@ export default function ControlPanel({
   instruction,
   setInstruction,
   availableModels,
-  modelsLoading,
-  modelsError,
+  modelsLoading: _modelsLoading,
+  modelsError: _modelsError,
   onProofread,
   isProofreading,
   onStop,
@@ -60,43 +58,38 @@ export default function ControlPanel({
     [context, instruction]
   );
   return (
-    <Card className={className}>
-      <CardBody className="gap-4 flex flex-col md:flex-row md:flex-nowrap md:items-end md:overflow-x-auto">
+    <Card className={`${className} min-w-0 overflow-clip`}>
+      <Card.Content className="gap-4 flex flex-col md:flex-row md:flex-nowrap md:items-end md:overflow-x-auto">
         <div className="flex items-center gap-2 md:mr-auto">
-          <Popover placement="bottom">
-            <PopoverTrigger>
-              <IconButton
-                withTooltip={false}
-                tooltip="System Prompt"
-                icon={<LightbulbIcon className="dark:invert h-6 w-6" />}
+          <Popover>
+            <Popover.Trigger>
+              <Button
+                aria-label="View system prompt"
                 isIconOnly
                 size="md"
-              />
-            </PopoverTrigger>
-            <PopoverContent>
-              <div className="w-80 md:w-96 p-2">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold">System Prompt</h3>
-                </div>
-                <Textarea
+                variant="ghost"
+                className="h-12 w-12"
+              >
+                <LightbulbIcon className="dark:invert h-6 w-6" />
+              </Button>
+            </Popover.Trigger>
+            <Popover.Content placement="bottom">
+              <Popover.Dialog className="w-80 md:w-96 p-2">
+                <Popover.Heading className="text-lg font-semibold mb-2">System Prompt</Popover.Heading>
+                <TextArea
                   value={systemPrompt}
-                  minRows={10}
-                  maxRows={15}
-                  isReadOnly
-                  variant="bordered"
-                  size="lg"
+                  readOnly
+                  className="w-full"
+                  rows={10}
                 />
-              </div>
-            </PopoverContent>
+              </Popover.Dialog>
+            </Popover.Content>
           </Popover>
           <IconButton
             tooltip="GitHub"
             icon={<GithubIcon className="dark:invert h-6 w-6" />}
-            as={Link}
-            isIconOnly
             size="md"
-            href="https://github.com/AuroraDysis/waner-proofreader"
-            isExternal
+            onPress={() => window.open("https://github.com/AuroraDysis/waner-proofreader", "_blank", "noopener,noreferrer")}
           />
           <ThemeSwitcher size="md" />
           <IconButton
@@ -107,57 +100,67 @@ export default function ControlPanel({
           />
         </div>
 
-        <Autocomplete
+        <ComboBox
           allowsCustomValue
-          label="AI Model"
-          placeholder="Select or enter a model"
-          defaultItems={availableModels.map((m) => ({ key: m, label: m }))}
           inputValue={model ?? ""}
           onInputChange={(value) => setModel(value)}
           selectedKey={model}
           onSelectionChange={(key) => key && setModel(key as string)}
-          isLoading={modelsLoading}
-          errorMessage={modelsError}
-          size="sm"
-          variant="bordered"
           className="w-full md:w-72"
         >
-          {(item) => (
-            <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
-          )}
-        </Autocomplete>
+          <Label>AI Model</Label>
+          <ComboBox.InputGroup>
+            <Input placeholder="Select or enter a model" />
+            <ComboBox.Trigger />
+          </ComboBox.InputGroup>
+          <ComboBox.Popover>
+            <ListBox>
+              {availableModels.map((m) => (
+                <ListBox.Item key={m} id={m} textValue={m}>{m}</ListBox.Item>
+              ))}
+            </ListBox>
+          </ComboBox.Popover>
+        </ComboBox>
 
         <Select
-          label="Context"
-          selectedKeys={[context]}
-          onSelectionChange={(keys) => {
-            const key = Array.from(keys)[0];
+          selectedKey={context}
+          onSelectionChange={(key) => {
             if (key) setContext(key as string);
           }}
-          size="sm"
-          variant="bordered"
           className="w-full md:w-56"
         >
-          {contexts.map((ctx) => (
-            <SelectItem key={ctx.key}>{ctx.label}</SelectItem>
-          ))}
+          <Label>Context</Label>
+          <Select.Trigger>
+            <Select.Value />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {contexts.map((ctx) => (
+                <ListBox.Item key={ctx.key} id={ctx.key} textValue={ctx.label}>{ctx.label}</ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
         </Select>
 
         <Select
-          label="Style"
-          selectedKeys={[instruction]}
-          onSelectionChange={(keys) => {
-            const key = Array.from(keys)[0];
+          selectedKey={instruction}
+          onSelectionChange={(key) => {
             if (key) setInstruction(key as string);
           }}
-          size="sm"
-          variant="bordered"
           isDisabled={context === "academic"}
           className="w-full md:w-56"
         >
-          {instructions.map((inst) => (
-            <SelectItem key={inst.key}>{inst.prompt}</SelectItem>
-          ))}
+          <Label>Style</Label>
+          <Select.Trigger>
+            <Select.Value />
+          </Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {instructions.map((inst) => (
+                <ListBox.Item key={inst.key} id={inst.key} textValue={inst.prompt}>{inst.prompt}</ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
         </Select>
 
         {!isMobile && (
@@ -166,7 +169,7 @@ export default function ControlPanel({
             onPress={isProofreading ? onStop : onProofread}
             icon={
               isProofreading ? (
-                <CircularProgress aria-label="Proofreading" size="sm" className="dark:invert" />
+                <ProgressCircle aria-label="Proofreading" size="sm" className="dark:invert" />
               ) : (
                 <EditIcon className="dark:invert h-6 w-6" />
               )
@@ -174,7 +177,7 @@ export default function ControlPanel({
             size="md"
           />
         )}
-      </CardBody>
+      </Card.Content>
     </Card>
   );
 }
