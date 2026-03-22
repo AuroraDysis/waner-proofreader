@@ -126,9 +126,9 @@ export default function HomePage() {
                       onSelectionChange={(key) => setActiveTab(key as string)}
                     >
                       <Tabs.List>
-                        <Tabs.Tab id="original">Original</Tabs.Tab>
-                        <Tabs.Tab id="modified">Modified</Tabs.Tab>
-                        <Tabs.Tab id="diff">Compare</Tabs.Tab>
+                        <Tabs.Tab id="original">Original<Tabs.Indicator /></Tabs.Tab>
+                        <Tabs.Tab id="modified">Modified<Tabs.Indicator /></Tabs.Tab>
+                        <Tabs.Tab id="diff">Compare<Tabs.Indicator /></Tabs.Tab>
                       </Tabs.List>
                       <Tabs.Panel id="original" className="flex-1 min-h-0 p-3">
                         <div className="h-full">
@@ -166,10 +166,15 @@ export default function HomePage() {
                   variant={isLoading ? "danger" : "primary"}
                   size="lg"
                   onPress={isLoading ? stop : startProofread}
-                  className="sticky bottom-4 shadow-lg m-3"
+                  className="sticky bottom-4 shadow-lg self-center"
                 >
                   {isLoading ? (
-                    <ProgressCircle aria-label="Proofreading" size="sm" className="dark:invert" />
+                    <ProgressCircle aria-label="Proofreading" isIndeterminate size="md" className="dark:invert">
+                      <ProgressCircle.Track>
+                        <ProgressCircle.TrackCircle />
+                        <ProgressCircle.FillCircle />
+                      </ProgressCircle.Track>
+                    </ProgressCircle>
                   ) : (
                     <EditIcon className="h-7 w-7" />
                   )}

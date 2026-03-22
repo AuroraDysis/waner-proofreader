@@ -33,7 +33,7 @@ export default function SettingModal({
             <Modal.Header>
               <Modal.Heading>Settings</Modal.Heading>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="overflow-visible">
               <TextField
                 autoFocus
                 value={apiKey}
