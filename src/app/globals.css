@@ -14,6 +14,14 @@
 [data-theme="dark"] {
   --field-border-width: 1px;
   --field-border: oklch(28% 0.006 286.033);
+  --shadow-surface: 0 2px 8px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Restore card shadow in dark mode — @apply shadow-surface uses Tailwind internals,
+   so override box-shadow directly on cards */
+.dark .card,
+[data-theme="dark"] .card {
+  box-shadow: var(--shadow-surface);
 }
 
 /* Fix HeroUI TextField not growing inside flex containers */

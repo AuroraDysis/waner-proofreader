@@ -23,7 +23,7 @@ export function ThemeSwitcher({ size = "md" }: ThemeSwitcherProps = {}) {
     lg: "h-9 w-9",
   };
 
-  const iconClass = `dark:invert ${iconSizeClasses[size as keyof typeof iconSizeClasses] || iconSizeClasses.md}`;
+  const iconClass = iconSizeClasses[size as keyof typeof iconSizeClasses] || iconSizeClasses.md;
   const isDark = mounted && resolvedTheme === "dark";
 
   return (

@@ -44,7 +44,7 @@ export default function SettingModal({
                 <InputGroup>
                   <InputGroup.Input placeholder="sk-\u2026" autoComplete="off" spellCheck={false} />
                   <InputGroup.Suffix>
-                    <LockIcon className="text-2xl text-default-foreground/40 pointer-events-none flex-shrink-0 dark:invert" />
+                    <LockIcon className="text-2xl text-default-foreground/40 pointer-events-none flex-shrink-0" />
                   </InputGroup.Suffix>
                 </InputGroup>
               </TextField>
@@ -57,7 +57,7 @@ export default function SettingModal({
                 <InputGroup>
                   <InputGroup.Input placeholder="https://api.openai.com/v1" autoComplete="off" />
                   <InputGroup.Suffix>
-                    <LinkIcon className="text-2xl text-default-foreground/40 pointer-events-none flex-shrink-0 dark:invert" />
+                    <LinkIcon className="text-2xl text-default-foreground/40 pointer-events-none flex-shrink-0" />
                   </InputGroup.Suffix>
                 </InputGroup>
                 <Description>Must start with http(s)://, empty to use server-side configuration</Description>

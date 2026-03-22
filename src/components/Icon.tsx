@@ -6,6 +6,7 @@ export const DarkModeIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -23,6 +24,7 @@ export const LightModeIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -39,6 +41,7 @@ export const EditIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -55,6 +58,7 @@ export const CopyIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -71,6 +75,7 @@ export const PasteIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -87,6 +92,7 @@ export const GithubIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -103,6 +109,7 @@ export const LightbulbIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 0 24 24"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -119,6 +126,7 @@ export const SettingIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 -960 960 960"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -134,6 +142,7 @@ export const LockIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 -960 960 960"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >
@@ -149,6 +158,7 @@ export const LinkIcon = (prop: React.SVGProps<SVGSVGElement>) => {
       height="24px"
       viewBox="0 -960 960 960"
       width="24px"
+      fill="currentColor"
       aria-hidden="true"
       {...prop}
     >

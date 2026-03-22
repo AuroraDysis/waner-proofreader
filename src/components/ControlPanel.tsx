@@ -70,7 +70,7 @@ export default function ControlPanel({
                 variant="ghost"
                 className="h-12 w-12"
               >
-                <LightbulbIcon className="dark:invert h-6 w-6" />
+                <LightbulbIcon className="h-6 w-6" />
               </Button>
             </Popover.Trigger>
             <Popover.Content placement="bottom">
@@ -87,14 +87,14 @@ export default function ControlPanel({
           </Popover>
           <IconButton
             tooltip="GitHub"
-            icon={<GithubIcon className="dark:invert h-6 w-6" />}
+            icon={<GithubIcon className="h-6 w-6" />}
             size="md"
             onPress={() => window.open("https://github.com/AuroraDysis/waner-proofreader", "_blank", "noopener,noreferrer")}
           />
           <ThemeSwitcher size="md" />
           <IconButton
             tooltip="Settings"
-            icon={<SettingIcon className="dark:invert h-6 w-6" />}
+            icon={<SettingIcon className="h-6 w-6" />}
             onPress={onOpenSettings}
             size="md"
           />
@@ -171,7 +171,7 @@ export default function ControlPanel({
               isProofreading ? (
                 <ProgressCircle aria-label="Proofreading" size="sm" className="dark:invert" />
               ) : (
-                <EditIcon className="dark:invert h-6 w-6" />
+                <EditIcon className="h-6 w-6" />
               )
             }
             size="md"

@@ -169,7 +169,7 @@ export default function HomePage() {
                   className="sticky bottom-4 shadow-lg m-3"
                 >
                   {isLoading ? (
-                    <ProgressCircle aria-label="Proofreading" size="sm" />
+                    <ProgressCircle aria-label="Proofreading" size="sm" className="dark:invert" />
                   ) : (
                     <EditIcon className="h-7 w-7" />
                   )}

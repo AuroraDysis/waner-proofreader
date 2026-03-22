@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { TextArea, TextField, Label, Card, Chip } from "@heroui/react";
+import { TextArea, TextField, Label, Card } from "@heroui/react";
 import IconButton from "@/components/IconButton";
 import { CopyIcon, PasteIcon } from "@/components/Icon";
 
@@ -34,34 +34,31 @@ export default function TextEditor({
   return (
     <div className={`${className} min-w-0`}>
       <Card className="h-full flex flex-col min-w-0 overflow-clip">
-        <Card.Header className="flex justify-between items-center pb-2">
-          <Card.Title>{label}</Card.Title>
-          <div className="flex items-center gap-2">
-            <Chip size="sm" variant="soft">
-              {wordCount} words
-            </Chip>
-            <Chip size="sm" variant="soft">
-              {charCount} chars
-            </Chip>
-            {onCopy && (
-              <IconButton
-                tooltip="Copy"
-                icon={<CopyIcon className="h-5 w-5" />}
-                size="sm"
-                onPress={onCopy}
-              />
-            )}
-            {onPaste && (
-              <IconButton
-                tooltip="Paste"
-                icon={<PasteIcon className="h-5 w-5" />}
-                size="sm"
-                onPress={onPaste}
-              />
-            )}
+        <Card.Content className="flex-1 min-h-0 flex flex-col">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-medium text-foreground/60">{label}</span>
+            <span className="text-xs text-foreground/40">{wordCount} words, {charCount} chars</span>
+            <div className="ml-auto flex items-center">
+              {onCopy && (
+                <IconButton
+                  tooltip="Copy"
+                  icon={<CopyIcon className="h-4 w-4" />}
+                  size="sm"
+                  onPress={onCopy}
+                  withTooltip={false}
+                />
+              )}
+              {onPaste && (
+                <IconButton
+                  tooltip="Paste"
+                  icon={<PasteIcon className="h-4 w-4" />}
+                  size="sm"
+                  onPress={onPaste}
+                  withTooltip={false}
+                />
+              )}
+            </div>
           </div>
-        </Card.Header>
-        <Card.Content className="pt-2 flex-1 min-h-0 flex flex-col">
           <div className="flex-1 min-h-0 flex flex-col">
             <TextField
               value={value}
