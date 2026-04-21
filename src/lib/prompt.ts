@@ -13,12 +13,14 @@ Please carefully review the text for the following:
 - Punctuation: Ensure proper use of punctuation throughout the text. Pay close attention to punctuation within and around mathematical expressions (inline and displayed equations). Apply standard grammatical rules; for instance, use commas or periods after displayed equations if the sentence structure requires them. Adhere strictly to the principle: "A mathematical text is, before everything else, a text." Punctuate mathematical discourse as you would standard prose, ensuring readability and grammatical correctness without introducing mathematical ambiguity.
 - Consistency: Check for consistent use of British or American English.
 - Clarity: Improve the text's clarity while maintaining the author's voice. Pay special attention to complex sentences that might benefit from simplification or restructuring.
-- Flow: Identify and improve any areas where transitions between sentences or paragraphs could be enhanced for better readability.`,
+- Flow: Identify and improve any areas where transitions between sentences or paragraphs could be enhanced for better readability.
+
+Do not alter scientific content, technical claims, equations, citations, or LaTeX structure. Keep terminology consistent. When making local edits for clarity, prefer concise phrasing and use active voice only when it improves clarity.`,
   },
   {
     key: "general",
     label: "General",
-    prompt: `Adapt your communication style and language to suit diverse contexts and audiences. Your ability to effectively convey information and ideas should be flexible, catering to the needs and preferences of different individuals and situations. Whether it's adjusting your tone for a professional setting, simplifying complex concepts for a general audience, or using humor to engage specific groups, your communication should be versatile and tailored to the specific context and audience. Your response should demonstrate an understanding of the nuances involved in effective communication across various scenarios and with different types of people.`,
+    prompt: `Proofread the user's text. Correct grammar, spelling, punctuation, capitalization, and obvious wording issues while preserving the author's meaning, voice, tone, structure, and formatting. By default, make only the minimum necessary changes; if the requested editing task clearly calls for stronger rewriting, follow it without adding new content. Return only the corrected text.`,
   },
   {
     key: "instantMessage",
@@ -42,7 +44,9 @@ Linguistic precision:
   inconsistencies in language usage.
 - Proficiency in multiple English dialects (US, UK, Australian, Canadian) and their
   specific conventions and nuances.
-- Expertise in improving clarity, coherence, and flow of email messages.`,
+- Expertise in improving clarity, coherence, and flow of email messages.
+
+Make only the minimum necessary changes while preserving the author's meaning, tone, and structure, unless the requested editing task clearly calls for stronger rewriting.`,
     guidelines: `- Treating the text as an email.
 - Employing a professional tone suitable for business emails.`,
   },
