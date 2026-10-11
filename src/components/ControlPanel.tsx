@@ -11,12 +11,21 @@ import {
   Label,
   Input,
   ProgressCircle,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@heroui/react";
 import { EditIcon, GithubIcon, SettingIcon, LightbulbIcon, ChevronDownIcon } from "@/components/Icon";
 import IconButton from "@/components/IconButton";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { contexts, instructions, generate_system_prompt } from "@/lib/prompt";
-import { useMemo, useState } from "react";
+import {
+  contexts,
+  instructions,
+  mathFormats,
+  generate_system_prompt,
+  resolve_math_format,
+} from "@/lib/prompt";
+import type { MathFormat } from "@/types";
+import { useId, useMemo, useState } from "react";
 
 interface ControlPanelProps {
   model: string | undefined;
@@ -25,6 +34,8 @@ interface ControlPanelProps {
   setContext: (context: string) => void;
   instruction: string;
   setInstruction: (instruction: string) => void;
+  mathFormat: MathFormat;
+  setMathFormat: (mathFormat: MathFormat) => void;
   availableModels: string[];
   modelsLoading: boolean;
   modelsError: string | null;
@@ -43,6 +54,8 @@ export default function ControlPanel({
   setContext,
   instruction,
   setInstruction,
+  mathFormat,
+  setMathFormat,
   availableModels,
   modelsLoading: _modelsLoading,
   modelsError: _modelsError,
@@ -54,9 +67,14 @@ export default function ControlPanel({
   isMobile,
 }: ControlPanelProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const mathLabelId = useId();
+  // Show the format that is actually sent: academic forces LaTeX, and a stale or
+  // unknown persisted value falls back to LaTeX instead of leaving nothing selected.
+  const isAcademic = context === "academic";
+  const effectiveMathFormat = resolve_math_format(context, mathFormat).key;
   const systemPrompt = useMemo(
-    () => generate_system_prompt(context, instruction),
-    [context, instruction]
+    () => generate_system_prompt(context, instruction, mathFormat),
+    [context, instruction, mathFormat]
   );
   return (
     <Card className={`${className} min-w-0`}>
@@ -174,6 +192,32 @@ export default function ControlPanel({
                   </ListBox>
                 </Select.Popover>
               </Select>
+
+              <div
+                className="col-span-2 flex flex-col gap-1 md:w-44"
+                data-disabled={isAcademic || undefined}
+              >
+                <Label id={mathLabelId}>Math</Label>
+                <ToggleButtonGroup
+                  aria-labelledby={mathLabelId}
+                  selectionMode="single"
+                  disallowEmptySelection
+                  fullWidth
+                  isDisabled={isAcademic}
+                  selectedKeys={[effectiveMathFormat]}
+                  onSelectionChange={(keys) => {
+                    const [key] = keys;
+                    if (key) setMathFormat(key as MathFormat);
+                  }}
+                >
+                  {mathFormats.map((m) => (
+                    // h-9.5 (38px) matches the Select trigger height so the row aligns.
+                    <ToggleButton key={m.key} id={m.key} className="h-9.5">
+                      {m.label}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </div>
             </div>
           </>
         )}

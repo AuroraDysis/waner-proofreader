@@ -1,11 +1,13 @@
 import { useState, useCallback } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import useLocalStorageState from "use-local-storage-state";
+import type { MathFormat } from "@/types";
 
 export interface ProofreaderConfig {
   model: string;
   context: string;
   instruction: string;
+  mathFormat: MathFormat;
   endpoint: string;
   apiKey: string;
 }
@@ -34,6 +36,11 @@ export function useProofreader() {
   const [instruction, setInstruction] = useLocalStorageState("instruction", {
     defaultValue: "basicProofread",
   });
+
+  const [mathFormat, setMathFormat] = useLocalStorageState<MathFormat>(
+    "mathFormat",
+    { defaultValue: "latex" }
+  );
 
   const [endpoint, setEndpoint] = useLocalStorageState("endpoint", {
     defaultValue: "",
@@ -73,6 +80,7 @@ export function useProofreader() {
           model,
           context,
           instruction,
+          mathFormat,
           endpoint,
           apiKey,
         },
@@ -88,6 +96,7 @@ export function useProofreader() {
     originalText,
     context,
     instruction,
+    mathFormat,
     endpoint,
     apiKey,
     complete,
@@ -104,6 +113,8 @@ export function useProofreader() {
     setContext,
     instruction,
     setInstruction,
+    mathFormat,
+    setMathFormat,
     endpoint,
     setEndpoint,
     apiKey,

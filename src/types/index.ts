@@ -14,10 +14,19 @@ export interface ModelApiResponse {
   models: string[];
 }
 
+export type MathFormat = "latex" | "unicode";
+
+export interface MathFormatOption {
+  key: MathFormat;
+  label: string;
+  prompt: string;
+}
+
 export interface ProofreadRequest {
   model: string;
   context: string;
   instruction: string;
+  mathFormat: MathFormat;
   prompt: string;
   endpoint: string;
   apiKey: string;
@@ -47,6 +56,7 @@ export interface ProofreaderState {
   model: string | undefined;
   context: string;
   instruction: string;
+  mathFormat: MathFormat;
   endpoint: string;
   apiKey: string;
   proofreadError: string | null;

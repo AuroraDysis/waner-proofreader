@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     model,
     context,
     instruction,
+    mathFormat,
     prompt,
     endpoint,
     apiKey,
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   const response = streamText({
     model: provider(model),
-    system: generate_system_prompt(context, instruction),
+    system: generate_system_prompt(context, instruction, mathFormat),
     prompt,
   });
 

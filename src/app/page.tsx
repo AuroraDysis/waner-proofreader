@@ -39,6 +39,8 @@ export default function HomePage() {
     setContext,
     instruction,
     setInstruction,
+    mathFormat,
+    setMathFormat,
     endpoint,
     setEndpoint,
     apiKey,
@@ -143,6 +145,8 @@ export default function HomePage() {
                   setContext={setContext}
                   instruction={instruction}
                   setInstruction={setInstruction}
+                  mathFormat={mathFormat}
+                  setMathFormat={setMathFormat}
                   availableModels={availableModels}
                   modelsLoading={modelsLoading}
                   modelsError={modelsError}
@@ -243,6 +247,8 @@ export default function HomePage() {
                   setContext={setContext}
                   instruction={instruction}
                   setInstruction={setInstruction}
+                  mathFormat={mathFormat}
+                  setMathFormat={setMathFormat}
                   availableModels={availableModels}
                   modelsLoading={modelsLoading}
                   modelsError={modelsError}
