@@ -41,11 +41,10 @@ Never add a second `-i` (e.g. `lsof -ti:8080 -a -i@127.0.0.1`): lsof ORs multipl
 - **Main Page** (`src/app/page.tsx`): Responsive layout with mobile/desktop views
 - **Text Editor** (`src/components/TextEditor.tsx`): Textarea-based editor with word/character count
 - **Diff Viewer** (`src/components/DiffViewer.tsx`): Word-level diff visualization with accept/reject controls
-- **Control Panel** (`src/components/ControlPanel.tsx`): Centralized controls for model selection and proofreading options
+- **Control Panel** (`src/components/ControlPanel.tsx`): Context, edit strength and math format controls
 - **Custom Hooks**:
   - `useProofreader`: Manages proofreading state, streaming AI responses, and API calls
   - `useDiffChanges`: Computes word-level diffs, provides accept/reject change callbacks
-  - `useModels`: Fetches available AI models
 - **Shared Utilities**:
   - `src/lib/diff-utils.ts`: Pure diff computation and change application functions
 - **UI Framework**: HeroUI components with Tailwind CSS v4 for styling
@@ -53,24 +52,23 @@ Never add a second `-i` (e.g. `lsof -ti:8080 -a -i@127.0.0.1`): lsof ORs multipl
 - **Error Handling**: Error boundary component for graceful error recovery
 
 ### API Routes
-- **`/api/completion`** (`src/app/api/completion/route.ts`): Handles AI text completion using Vercel AI SDK, supports multiple AI providers
-- **`/api/models`** (`src/app/api/models/route.ts`): Returns available AI models from configuration
+- **`/api/completion`** (`src/app/api/completion/route.ts`): Handles AI text completion using Vercel AI SDK via any OpenAI-compatible endpoint
 
 ### Configuration System
 - **Environment-based** (`src/lib/config.ts`): Reads TOML configuration from file path or base64-encoded string via `CONFIG` environment variable
 - **Multi-user support**: Each user gets their own API key and endpoint configuration
-- **Model selection**: Supports multiple AI models (OpenAI, Google Gemini, Anthropic, etc.)
+- **Model**: Configured users all get one model, `DEFAULT_MODEL` in `src/lib/model.ts` (`~deepseek/deepseek-flash-latest`) unless the config sets `model`; only a visitor with their own API key may enter a model in Settings
 
 ### Prompt System
-- **Prompts** (`src/lib/prompt.ts`): Contains context-aware prompts for different writing scenarios (academic, business, casual)
-- **Dynamic instructions**: Various proofreading styles (critical, concise, simple)
+- **Prompts** (`src/lib/prompt.ts`): Two contexts (General, Academic) × three edit strengths (Proofread, Polish, Clarify), plus a shared editing contract and a readability paragraph based on arXiv:2610.29162. Switching context resets the edit strength to that context's `defaultInstruction` (General → Proofread, Academic → Polish)
+- **Changing options**: Bump `OPTIONS_VERSION` in `prompt.ts` whenever contexts or instructions change; the saved selections are stored under `context-v<N>` / `instruction-v<N>`, so a bump resets every user's browser to the defaults. Unknown keys (e.g. a stale open tab posting an old key to the API) still fall back to General / Proofread via `resolve_context` / `resolve_instruction`
 
 ## Configuration
 
 The app requires a TOML configuration file or base64-encoded config string:
 
 ```toml
-models = ["openai/gpt-4o", "google/gemini-2.5-pro-preview-03-25", ...]
+model = "~deepseek/deepseek-flash-latest"  # optional
 
 [[users]]
 name = "username"

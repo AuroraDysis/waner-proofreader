@@ -1,15 +1,20 @@
 import { useState, useCallback } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import useLocalStorageState from "use-local-storage-state";
+import {
+  OPTIONS_VERSION,
+  resolve_context,
+  resolve_instruction,
+} from "@/lib/prompt";
 import type { MathFormat } from "@/types";
 
 export interface ProofreaderConfig {
-  model: string;
   context: string;
   instruction: string;
   mathFormat: MathFormat;
   endpoint: string;
   apiKey: string;
+  model: string;
 }
 
 export function useProofreader() {
@@ -25,17 +30,25 @@ export function useProofreader() {
     { defaultValue: "" }
   );
 
-  const [model, setModel] = useLocalStorageState<string | undefined>("model", {
-    defaultValue: undefined,
-  });
+  const [storedContext, setContext] = useLocalStorageState(
+    `context-v${OPTIONS_VERSION}`,
+    { defaultValue: "general" }
+  );
+  const context = resolve_context(storedContext).key;
 
-  const [context, setContext] = useLocalStorageState("context", {
-    defaultValue: "general",
-  });
+  const [storedInstruction, setInstruction] = useLocalStorageState(
+    `instruction-v${OPTIONS_VERSION}`,
+    { defaultValue: "proofread" }
+  );
+  const instruction = resolve_instruction(storedInstruction).key;
 
-  const [instruction, setInstruction] = useLocalStorageState("instruction", {
-    defaultValue: "basicProofread",
-  });
+  const selectContext = useCallback(
+    (key: string) => {
+      setContext(key);
+      setInstruction(resolve_context(key).defaultInstruction);
+    },
+    [setContext, setInstruction]
+  );
 
   const [mathFormat, setMathFormat] = useLocalStorageState<MathFormat>(
     "mathFormat",
@@ -50,6 +63,11 @@ export function useProofreader() {
     defaultValue: "",
   });
 
+  // Only sent with the user's own API key; empty means the default model.
+  const [model, setModel] = useLocalStorageState("customModel", {
+    defaultValue: "",
+  });
+
   const { complete, completion, isLoading, stop } = useCompletion({
     streamProtocol: "text",
     api: "/api/completion",
@@ -58,6 +76,14 @@ export function useProofreader() {
       setProofreadError(error.message);
     },
     onFinish: (_prompt, completion) => {
+      // A provider error inside the stream (e.g. an unknown model) ends it with no
+      // text; keep the previous suggestion instead of replacing it with nothing.
+      if (!completion.trim()) {
+        setProofreadError(
+          "The model returned no text. Check the model name and API key in Settings."
+        );
+        return;
+      }
       setProofreadError(null);
       setModifiedText(completion);
     },
@@ -67,8 +93,8 @@ export function useProofreader() {
   const streamingText = isLoading && completion ? completion : modifiedText;
 
   const proofread = useCallback(async () => {
-    if (!model || !originalText.trim()) {
-      setProofreadError("Please select a model and enter text to proofread");
+    if (!originalText.trim()) {
+      setProofreadError("Please enter text to proofread");
       return;
     }
 
@@ -77,12 +103,12 @@ export function useProofreader() {
       setProofreadError(null);
       await complete(originalText, {
         body: {
-          model,
           context,
           instruction,
           mathFormat,
           endpoint,
           apiKey,
+          model,
         },
       });
     } catch (error) {
@@ -92,13 +118,13 @@ export function useProofreader() {
       );
     }
   }, [
-    model,
     originalText,
     context,
     instruction,
     mathFormat,
     endpoint,
     apiKey,
+    model,
     complete,
   ]);
 
@@ -107,10 +133,8 @@ export function useProofreader() {
     setOriginalText,
     modifiedText,
     setModifiedText,
-    model,
-    setModel,
     context,
-    setContext,
+    setContext: selectContext,
     instruction,
     setInstruction,
     mathFormat,
@@ -119,6 +143,8 @@ export function useProofreader() {
     setEndpoint,
     apiKey,
     setApiKey,
+    model,
+    setModel,
     proofreadError,
     setProofreadError,
     isLoading,

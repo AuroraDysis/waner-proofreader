@@ -33,7 +33,8 @@ services:
 where `<base64 encoded TOML>` is the base64 encoded TOML configuration file or `<path to TOML file>` is the path to the TOML configuration file. The TOML file `config.toml` should contain the following information:
 
 ```toml
-models = ["openai/gpt-4o", "google/gemini-2.5-pro-preview-03-25", "x-ai/grok-3-beta", "qwen/qwen3-235b-a22b", "openai/gpt-4.1", "google/gemini-2.5-flash-preview", "qwen/qwen-max", "openai/chatgpt-4o-latest"]
+# optional; defaults to ~deepseek/deepseek-flash-latest
+model = "~deepseek/deepseek-flash-latest"
 
 [[users]]
 name = "name"
@@ -46,8 +47,10 @@ openai_api_key = "your api key of the endpoint"
 ...
 ```
 
-If you want to use providers other than OpenRouter, you may need to modify `models` accordingly. Replace
-`<openai_base_url>` and `<your_api_key>` with your actual API key and base URL, which should be compatible with the OpenAI API. The `models` field should contain a list of models you want to use, and you can add or remove models as needed.
+Users of these keys cannot pick a model: every request uses `model`, so set it to a model your endpoint serves if you use a provider other than OpenRouter. Replace
+`<openai_base_url>` and `<your_api_key>` with your actual API key and base URL, which should be compatible with the OpenAI API.
+
+Visitors who enter their own API key in Settings may also enter an endpoint (default: OpenRouter) and a model (default: `model` above).
 
 You can also add multiple users by adding more `[[users]]` sections.
 

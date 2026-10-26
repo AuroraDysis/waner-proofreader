@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useDeferredValue, useSyncExternalStore, useCallback } from "react";
+import { useState, useRef, useDeferredValue, useSyncExternalStore, useCallback } from "react";
 import { Card, Chip, Tabs, Button, ProgressCircle, toast } from "@heroui/react";
 
 import dynamic from "next/dynamic";
@@ -13,7 +13,6 @@ const DiffViewer = dynamic(() => import("@/components/DiffViewer"), { ssr: false
 import { EditIcon } from "@/components/Icon";
 
 import { useProofreader } from "@/hooks/useProofreader";
-import { useModels } from "@/hooks/useModels";
 import { useDiffChanges } from "@/hooks/useDiffChanges";
 
 const subscribeResize = (callback: () => void) => {
@@ -33,8 +32,6 @@ export default function HomePage() {
     setOriginalText,
     modifiedText,
     setModifiedText,
-    model,
-    setModel,
     context,
     setContext,
     instruction,
@@ -45,14 +42,14 @@ export default function HomePage() {
     setEndpoint,
     apiKey,
     setApiKey,
+    model,
+    setModel,
     proofreadError,
     setProofreadError,
     isLoading,
     proofread,
     stop,
   } = useProofreader();
-
-  const { models: availableModels, isLoading: modelsLoading, error: modelsError } = useModels();
 
   const {
     numChanges,
@@ -87,13 +84,6 @@ export default function HomePage() {
     acceptAll();
     flashOriginalEditor();
   }, [acceptAll, flashOriginalEditor]);
-
-  useEffect(() => {
-    if (availableModels.length === 0) return;
-    if (!model || !availableModels.includes(model)) {
-      setModel(availableModels[0]);
-    }
-  }, [availableModels, model, setModel]);
 
   const deferredOriginal = useDeferredValue(originalText);
   const deferredModified = useDeferredValue(modifiedText);
@@ -139,17 +129,12 @@ export default function HomePage() {
             <div className="flex-1 min-h-0 flex flex-col">
               <div className="space-y-4 flex-1 flex flex-col min-h-0">
                 <ControlPanel
-                  model={model}
-                  setModel={setModel}
                   context={context}
                   setContext={setContext}
                   instruction={instruction}
                   setInstruction={setInstruction}
                   mathFormat={mathFormat}
                   setMathFormat={setMathFormat}
-                  availableModels={availableModels}
-                  modelsLoading={modelsLoading}
-                  modelsError={modelsError}
                   onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
@@ -241,17 +226,12 @@ export default function HomePage() {
             <Card.Content className="h-full flex flex-col min-w-0">
               <div className="h-full min-h-0 flex flex-col gap-4 min-w-0">
                 <ControlPanel
-                  model={model}
-                  setModel={setModel}
                   context={context}
                   setContext={setContext}
                   instruction={instruction}
                   setInstruction={setInstruction}
                   mathFormat={mathFormat}
                   setMathFormat={setMathFormat}
-                  availableModels={availableModels}
-                  modelsLoading={modelsLoading}
-                  modelsError={modelsError}
                   onProofread={startProofread}
                   isProofreading={isLoading}
                   onStop={stop}
@@ -302,6 +282,8 @@ export default function HomePage() {
         setEndpoint={setEndpoint}
         apiKey={apiKey}
         setApiKey={setApiKey}
+        model={model}
+        setModel={setModel}
       />
       <ErrorModal
         error={proofreadError}

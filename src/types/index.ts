@@ -6,12 +6,8 @@ export interface User {
 }
 
 export interface Config {
-  models: string[];
+  model?: string;
   users: User[];
-}
-
-export interface ModelApiResponse {
-  models: string[];
 }
 
 export type MathFormat = "latex" | "unicode";
@@ -23,7 +19,6 @@ export interface MathFormatOption {
 }
 
 export interface ProofreadRequest {
-  model: string;
   context: string;
   instruction: string;
   mathFormat: MathFormat;
@@ -36,13 +31,14 @@ export interface Context {
   key: string;
   label: string;
   prompt: string;
-  guidelines?: string;
+  // Edit strength selected when the user switches to this context.
+  defaultInstruction: string;
 }
 
 export interface Instruction {
   key: string;
+  label: string;
   prompt: string;
-  description?: string;
 }
 
 export interface DiffSegment {
@@ -53,7 +49,6 @@ export interface DiffSegment {
 export interface ProofreaderState {
   originalText: string;
   modifiedText: string;
-  model: string | undefined;
   context: string;
   instruction: string;
   mathFormat: MathFormat;

@@ -2,14 +2,12 @@
 
 import {
   Select,
-  ComboBox,
   Card,
   Popover,
   Button,
   TextArea,
   ListBox,
   Label,
-  Input,
   ProgressCircle,
   ToggleButton,
   ToggleButtonGroup,
@@ -28,17 +26,12 @@ import type { MathFormat } from "@/types";
 import { useId, useMemo, useState } from "react";
 
 interface ControlPanelProps {
-  model: string | undefined;
-  setModel: (model: string) => void;
   context: string;
   setContext: (context: string) => void;
   instruction: string;
   setInstruction: (instruction: string) => void;
   mathFormat: MathFormat;
   setMathFormat: (mathFormat: MathFormat) => void;
-  availableModels: string[];
-  modelsLoading: boolean;
-  modelsError: string | null;
   onProofread: () => void;
   isProofreading: boolean;
   onStop: () => void;
@@ -48,17 +41,12 @@ interface ControlPanelProps {
 }
 
 export default function ControlPanel({
-  model,
-  setModel,
   context,
   setContext,
   instruction,
   setInstruction,
   mathFormat,
   setMathFormat,
-  availableModels,
-  modelsLoading: _modelsLoading,
-  modelsError: _modelsError,
   onProofread,
   isProofreading,
   onStop,
@@ -129,28 +117,6 @@ export default function ControlPanel({
 
         {(!isMobile || isExpanded) && (
           <>
-            <ComboBox
-              allowsCustomValue
-              inputValue={model ?? ""}
-              onInputChange={(value) => setModel(value)}
-              selectedKey={model}
-              onSelectionChange={(key) => key && setModel(key as string)}
-              className="w-full md:w-72"
-            >
-              <Label>AI Model</Label>
-              <ComboBox.InputGroup>
-                <Input placeholder="Select or enter a model" />
-                <ComboBox.Trigger />
-              </ComboBox.InputGroup>
-              <ComboBox.Popover>
-                <ListBox>
-                  {availableModels.map((m) => (
-                    <ListBox.Item key={m} id={m} textValue={m}>{m}</ListBox.Item>
-                  ))}
-                </ListBox>
-              </ComboBox.Popover>
-            </ComboBox>
-
             <div className="grid grid-cols-2 gap-4 w-full md:contents">
               <Select
                 selectedKey={context}
@@ -177,17 +143,16 @@ export default function ControlPanel({
                 onSelectionChange={(key) => {
                   if (key) setInstruction(key as string);
                 }}
-                isDisabled={context === "academic"}
                 className="w-full md:w-56"
               >
-                <Label>Style</Label>
+                <Label>Edit strength</Label>
                 <Select.Trigger>
                   <Select.Value />
                 </Select.Trigger>
                 <Select.Popover>
                   <ListBox>
                     {instructions.map((inst) => (
-                      <ListBox.Item key={inst.key} id={inst.key} textValue={inst.prompt}>{inst.prompt}</ListBox.Item>
+                      <ListBox.Item key={inst.key} id={inst.key} textValue={inst.label}>{inst.label}</ListBox.Item>
                     ))}
                   </ListBox>
                 </Select.Popover>

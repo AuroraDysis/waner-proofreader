@@ -1,6 +1,7 @@
 import { parse } from "smol-toml";
 import fs from "fs";
 import type { Config } from "@/types";
+import { DEFAULT_MODEL } from "@/lib/model";
 
 // --- Config Loading ---
 let config_content: string;
@@ -32,7 +33,7 @@ try {
   }
 }
 
-let config: Config = { models: [], users: [] }; // Default empty config
+let config: Config = { users: [] }; // Default empty config
 if (config_content) {
   try {
     config = parse(config_content) as unknown as Config;
@@ -42,7 +43,8 @@ if (config_content) {
 }
 // --- End Config Loading ---
 
-export const models = config.models || [];
+// Users of the server-side keys do not pick a model; the deployment may override it with `model = "..."`.
+export const model = config.model || DEFAULT_MODEL;
 export const users = config.users || [];
 export const apiKeys = Array.isArray(config?.users)
   ? config.users.map((user) => user.key)
