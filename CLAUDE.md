@@ -25,6 +25,16 @@ pnpm run start
 pnpm run lint
 ```
 
+### Stopping the server on port 8080
+
+Stop only the listener on this port, with a single `-i` spec:
+
+```bash
+lsof -tiTCP:8080 -sTCP:LISTEN | xargs kill
+```
+
+Never add a second `-i` (e.g. `lsof -ti:8080 -a -i@127.0.0.1`): lsof ORs multiple `-i` options even with `-a`, so that selects every process listening on `127.0.0.1`, which includes every running Claude Code session on this Mac. On 2026-10-26 that command killed all of them twice. Never `pkill`/`killall` by a broad name (`node`, `next`, `claude`) either.
+
 ## Architecture and Key Components
 
 ### Frontend Architecture
